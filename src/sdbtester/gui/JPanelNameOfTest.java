@@ -4,12 +4,16 @@
  */
 package sdbtester.gui;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import javax.sound.midi.SysexMessage;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import sdbtester.TestCaseSettings;
+import sdbtester.validators.DbTestValidator;
 
 /**
  *
@@ -18,8 +22,9 @@ import sdbtester.TestCaseSettings;
 public class JPanelNameOfTest extends javax.swing.JPanel {
 
     private static TestCaseSettings appSettings;
-    private DefaultListModel lmodel_ExistingTestsListModel;
+    private DefaultComboBoxModel comboModel_ExistingTests;
     private static Logger logger = Logger.getLogger(TestCaseSettings.class);
+    private DbTestValidator validator = new DbTestValidator();
 
     /**
      * Creates new form JPanelNameOfTest
@@ -27,8 +32,24 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
     public JPanelNameOfTest() {
         initComponents();
         appSettings = TestCaseSettings.getInstance();
-        lmodel_ExistingTestsListModel = new DefaultListModel();
-//        jList1.setModel(lmodel_ExistingTestsListModel);
+        ComboBoxDbTypes.removeAllItems();
+        ComboBoxDbTypes.addItem(appSettings.DB_TYPE_MYSQL);
+        ComboBoxDbTypes.addItem(appSettings.DB_TYPE_MONGO);
+
+        //select template
+        comboModel_ExistingTests = new DefaultComboBoxModel();
+        LoadExistingTestCases(appSettings.DB_TYPE_MYSQL);
+        comboBoxExistingTests.setModel(comboModel_ExistingTests);
+        if (comboModel_ExistingTests.getSelectedItem().equals(comboModel_ExistingTests.getElementAt(0))) {
+            checkBoxMakeTestCopy.setSelected(false);
+            checkBoxMakeTestCopy.setEnabled(false);
+        } else {
+            checkBoxMakeTestCopy.setEnabled(true);
+        }
+
+        //buttons
+        btnBackTestCreation.setEnabled(false);
+
     }
 
     /**
@@ -43,18 +64,18 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnBackTestCreation = new javax.swing.JButton();
+        btnForwardTestCreation = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox();
+        ComboBoxDbTypes = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jtextNameOfTestCase = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         area_DescriptionOfTestCase = new javax.swing.JTextArea();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jComboBox2 = new javax.swing.JComboBox();
+        checkBoxMakeTestCopy = new javax.swing.JCheckBox();
+        comboBoxExistingTests = new javax.swing.JComboBox();
         jLabel6 = new javax.swing.JLabel();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
@@ -76,21 +97,37 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButton3.setText("Назад");
-        jPanel6.add(jButton3);
+        btnBackTestCreation.setText("Назад");
+        jPanel6.add(btnBackTestCreation);
 
-        jButton4.setText("Вперед");
-        jPanel6.add(jButton4);
+        btnForwardTestCreation.setText("Вперед");
+        btnForwardTestCreation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnForwardTestCreationActionPerformed(evt);
+            }
+        });
+        jPanel6.add(btnForwardTestCreation);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ComboBoxDbTypes.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ComboBoxDbTypes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboBoxDbTypesActionPerformed(evt);
+            }
+        });
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("Тип БД:");
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText("Название:");
+
+        jtextNameOfTestCase.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jtextNameOfTestCaseKeyReleased(evt);
+            }
+        });
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel5.setText("Описание:");
@@ -99,76 +136,79 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
         area_DescriptionOfTestCase.setRows(5);
         jScrollPane2.setViewportView(area_DescriptionOfTestCase);
 
-        jCheckBox1.setText("Скопировать в новый тест");
+        checkBoxMakeTestCopy.setText("Скопировать в новый");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboBoxExistingTests.setMaximumRowCount(10000);
+        comboBoxExistingTests.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBoxExistingTestsActionPerformed(evt);
+            }
+        });
 
-        jLabel6.setText("Выбрать из списка:");
+        jLabel6.setText("Выбрать тест:");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(comboBoxExistingTests, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(checkBoxMakeTestCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ComboBoxDbTypes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 562, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2)
-                            .addComponent(jtextNameOfTestCase)))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(43, 43, 43)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 518, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(jtextNameOfTestCase)
+                            .addComponent(jScrollPane2))
+                        .addContainerGap())))
         );
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel3, jLabel4, jLabel5});
 
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jCheckBox1, jComboBox2});
+        jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {checkBoxMakeTestCopy, comboBoxExistingTests});
 
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(13, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ComboBoxDbTypes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboBoxExistingTests, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox1)
+                .addComponent(checkBoxMakeTestCopy)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jtextNameOfTestCase, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel3, jLabel4, jLabel5});
 
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBox1, jtextNameOfTestCase});
+        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {ComboBoxDbTypes, jtextNameOfTestCase});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -187,20 +227,47 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void comboBoxExistingTestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxExistingTestsActionPerformed
+        if ((comboModel_ExistingTests.getSize() > 0) && comboModel_ExistingTests.getSelectedItem().equals(comboModel_ExistingTests.getElementAt(0))) {
+            checkBoxMakeTestCopy.setSelected(false);
+            checkBoxMakeTestCopy.setEnabled(false);
+        } else {
+            checkBoxMakeTestCopy.setEnabled(true);
+        }
+    }//GEN-LAST:event_comboBoxExistingTestsActionPerformed
+
+    private void jtextNameOfTestCaseKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtextNameOfTestCaseKeyReleased
+        if (!validator.isEnOrDigit(jtextNameOfTestCase.getText())) {
+            jtextNameOfTestCase.setText(jtextNameOfTestCase.getText().substring(0, jtextNameOfTestCase.getText().length() - 1));
+        }
+    }//GEN-LAST:event_jtextNameOfTestCaseKeyReleased
+
+    private void ComboBoxDbTypesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxDbTypesActionPerformed
+        if (ComboBoxDbTypes.getSelectedItem() != null && ComboBoxDbTypes.getSelectedIndex() != -1) {
+            LoadExistingTestCases(ComboBoxDbTypes.getSelectedItem().toString());
+        }
+    }//GEN-LAST:event_ComboBoxDbTypesActionPerformed
+
+    private void btnForwardTestCreationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnForwardTestCreationActionPerformed
+        if (appSettings.setCurrentTestName(jtextNameOfTestCase.getText(), ComboBoxDbTypes.getSelectedItem().toString())) {
+            
+        }
+    }//GEN-LAST:event_btnForwardTestCreationActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox ComboBoxDbTypes;
     private javax.swing.JTextArea area_DescriptionOfTestCase;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JButton btnBackTestCreation;
+    private javax.swing.JButton btnForwardTestCreation;
+    private javax.swing.JCheckBox checkBoxMakeTestCopy;
+    private javax.swing.JComboBox comboBoxExistingTests;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -214,26 +281,30 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private boolean LoadExistingTestCases(String dbType) {
+        if (comboModel_ExistingTests == null) {
+            return false;
+        }
         try {
             File f = new File(appSettings.TEST_CASES_MAIN_PATH + dbType);
-            lmodel_ExistingTestsListModel.clear();
+            comboModel_ExistingTests.removeAllElements();
+            comboModel_ExistingTests.addElement("-----Создать новый-----");
             if (f.isDirectory()) {
                 File[] testCases = f.listFiles();
                 for (int i = 0; i < testCases.length; ++i) {
                     File cur = new File(testCases[i].getPath());
                     if (cur.isDirectory()) {
-                        lmodel_ExistingTestsListModel.addElement(testCases[i].getName());
+                        comboModel_ExistingTests.addElement(testCases[i].getName());
                     }
                 }
             } else {
                 return false;
             }
         } catch (Exception e) {
-            logger.error("LoadExistingTestCases  ->  \n" + e.getStackTrace());
-            JOptionPane.showMessageDialog(null, e.getMessage() + e.getStackTrace(), "Not enough mana!", JOptionPane.ERROR_MESSAGE);
+            logger.error(e.getStackTrace());
+            JOptionPane.showMessageDialog(null, e.getMessage() + e.getStackTrace(), "Not enough mana", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        System.out.println(lmodel_ExistingTestsListModel.getElementAt(0).toString());
+//        System.out.println(comboModel_ExistingTests.getElementAt(0).toString());
         return true;
     }
 }

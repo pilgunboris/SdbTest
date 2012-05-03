@@ -23,7 +23,7 @@ public class TestCaseSettings {
 //    public final String MONGO_TEST_CASES_PATH = TEST_CASES_MAIN_PATH + this.DB_TYPE_MONGO + "/";
     public final String SETTINGS_APP = "app_settings.properties";
     public final String SETTINGS_TEST_CASE = "test_case.properties";
-    public final String DB_TYPE_MYSQL = "mysql";
+    public final String DB_TYPE_MYSQL = "mysql";     //default
     public final String DB_TYPE_MONGO = "mongo";
     private static Logger logger = Logger.getLogger(TestCaseSettings.class);
     private static TestCaseSettings instance = new TestCaseSettings();
@@ -102,7 +102,7 @@ public class TestCaseSettings {
         return true;
     }
 
-    public void setTestCaseName(String TestCaseName) {
+    private void setTestCaseName(String TestCaseName) {
         this.TestCaseName = TestCaseName;
     }
 

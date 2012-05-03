@@ -4,7 +4,11 @@
  */
 package sdbtester.gui;
 
+import java.awt.CardLayout;
+import java.awt.event.*;
 import javax.swing.JPanel;
+import org.apache.log4j.Logger;
+import sdbtester.TestCaseSettings;
 
 /**
  *
@@ -12,11 +16,29 @@ import javax.swing.JPanel;
  */
 public class StartForm extends javax.swing.JFrame {
 
+    private TestCaseSettings appSettings;
+    private static Logger logger = Logger.getLogger(StartForm.class);
+
     /**
      * Creates new form StartForm
      */
     public StartForm() {
         initComponents();
+        appSettings = TestCaseSettings.getInstance();
+        btnBackTestCreation.setEnabled(false);
+        btnForwardTestCreation.setEnabled(false);
+        jPanelNameOfTest1.getJtextNameOfTestCase().addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyTyped(KeyEvent ke) {
+                if (jPanelNameOfTest1.getJtextNameOfTestCase().getText().length() > 1) {
+                    btnForwardTestCreation.setEnabled(true);
+                } else {
+                    btnForwardTestCreation.setEnabled(false);
+                }
+            }
+        });
+
     }
 
     /**
@@ -30,17 +52,65 @@ public class StartForm extends javax.swing.JFrame {
 
         jTabbedPainMain = new javax.swing.JTabbedPane();
         PanelTesting = new javax.swing.JPanel();
-        jPanelNameOfTest1 = new sdbtester.gui.JPanelNameOfTest();
+        jPanel6 = new javax.swing.JPanel();
+        btnBackTestCreation = new javax.swing.JButton();
+        btnForwardTestCreation = new javax.swing.JButton();
+        PanelTestingCards = new javax.swing.JPanel();
+        jPanelNameOfTest1 = new sdbtester.gui.CardNameOfTest();
+        dbConnectSettings1 = new sdbtester.gui.CardMysqlDbSettings();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        PanelTesting.setLayout(new java.awt.CardLayout());
-        PanelTesting.add(jPanelNameOfTest1, "CardCreateTestCase");
+        jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        btnBackTestCreation.setText("Назад");
+        jPanel6.add(btnBackTestCreation);
+
+        btnForwardTestCreation.setText("Вперед");
+        btnForwardTestCreation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnForwardTestCreationActionPerformed(evt);
+            }
+        });
+        jPanel6.add(btnForwardTestCreation);
+
+        PanelTestingCards.setLayout(new java.awt.CardLayout());
+        PanelTestingCards.add(jPanelNameOfTest1, "CreateTestCaseCard");
+
+        javax.swing.GroupLayout dbConnectSettings1Layout = new javax.swing.GroupLayout(dbConnectSettings1);
+        dbConnectSettings1.setLayout(dbConnectSettings1Layout);
+        dbConnectSettings1Layout.setHorizontalGroup(
+            dbConnectSettings1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1003, Short.MAX_VALUE)
+        );
+        dbConnectSettings1Layout.setVerticalGroup(
+            dbConnectSettings1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 388, Short.MAX_VALUE)
+        );
+
+        PanelTestingCards.add(dbConnectSettings1, "card3");
+
+        javax.swing.GroupLayout PanelTestingLayout = new javax.swing.GroupLayout(PanelTesting);
+        PanelTesting.setLayout(PanelTestingLayout);
+        PanelTestingLayout.setHorizontalGroup(
+            PanelTestingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelTestingLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addComponent(PanelTestingCards, javax.swing.GroupLayout.DEFAULT_SIZE, 1003, Short.MAX_VALUE)
+        );
+        PanelTestingLayout.setVerticalGroup(
+            PanelTestingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelTestingLayout.createSequentialGroup()
+                .addComponent(PanelTestingCards, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
 
         jTabbedPainMain.addTab("Тестирование", PanelTesting);
 
@@ -51,11 +121,11 @@ public class StartForm extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 997, Short.MAX_VALUE)
+            .addGap(0, 1003, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 486, Short.MAX_VALUE)
+            .addGap(0, 445, Short.MAX_VALUE)
         );
 
         jTabbedPainMain.addTab("Настройки", jPanel2);
@@ -68,43 +138,39 @@ public class StartForm extends javax.swing.JFrame {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 52, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPainMain)
-                    .addComponent(jScrollPane1))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(1014, 1014, 1014))
+                    .addComponent(jTabbedPainMain, javax.swing.GroupLayout.PREFERRED_SIZE, 1008, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPainMain, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1)))
-                .addContainerGap())
+                .addComponent(jTabbedPainMain)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnForwardTestCreationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnForwardTestCreationActionPerformed
+        if (appSettings.setCurrentTestName(jPanelNameOfTest1.getJtextNameOfTestCase().getText(), jPanelNameOfTest1.getComboBoxDbTypes().getSelectedItem().toString())) {
+//            CardLayout card = 
+        }
+    }//GEN-LAST:event_btnForwardTestCreationActionPerformed
 
     /**
      * @param args the command line arguments
@@ -157,12 +223,15 @@ public class StartForm extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelTesting;
+    private javax.swing.JPanel PanelTestingCards;
+    private javax.swing.JButton btnBackTestCreation;
+    private javax.swing.JButton btnForwardTestCreation;
+    private sdbtester.gui.CardMysqlDbSettings dbConnectSettings1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
-    private sdbtester.gui.JPanelNameOfTest jPanelNameOfTest1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel jPanel6;
+    private sdbtester.gui.CardNameOfTest jPanelNameOfTest1;
     private javax.swing.JTabbedPane jTabbedPainMain;
-    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }

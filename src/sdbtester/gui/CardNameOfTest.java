@@ -8,9 +8,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import javax.sound.midi.SysexMessage;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import org.apache.log4j.Logger;
 import sdbtester.TestCaseSettings;
 import sdbtester.validators.DbTestValidator;
@@ -19,17 +17,17 @@ import sdbtester.validators.DbTestValidator;
  *
  * @author boris
  */
-public class JPanelNameOfTest extends javax.swing.JPanel {
+public class CardNameOfTest extends javax.swing.JPanel {
 
     private static TestCaseSettings appSettings;
     private DefaultComboBoxModel comboModel_ExistingTests;
-    private static Logger logger = Logger.getLogger(TestCaseSettings.class);
+    private static Logger logger = Logger.getLogger(CardNameOfTest.class);
     private DbTestValidator validator = new DbTestValidator();
 
     /**
-     * Creates new form JPanelNameOfTest
+     * Creates new form CardNameOfTest
      */
-    public JPanelNameOfTest() {
+    public CardNameOfTest() {
         initComponents();
         appSettings = TestCaseSettings.getInstance();
         ComboBoxDbTypes.removeAllItems();
@@ -48,8 +46,6 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
         }
 
         //buttons
-        btnBackTestCreation.setEnabled(false);
-
     }
 
     /**
@@ -63,9 +59,6 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
 
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
-        btnBackTestCreation = new javax.swing.JButton();
-        btnForwardTestCreation = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         ComboBoxDbTypes = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
@@ -94,19 +87,6 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
-
-        jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        btnBackTestCreation.setText("Назад");
-        jPanel6.add(btnBackTestCreation);
-
-        btnForwardTestCreation.setText("Вперед");
-        btnForwardTestCreation.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnForwardTestCreationActionPerformed(evt);
-            }
-        });
-        jPanel6.add(btnForwardTestCreation);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -202,7 +182,7 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -218,8 +198,7 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -229,8 +208,6 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -256,16 +233,9 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_ComboBoxDbTypesActionPerformed
 
-    private void btnForwardTestCreationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnForwardTestCreationActionPerformed
-        if (appSettings.setCurrentTestName(jtextNameOfTestCase.getText(), ComboBoxDbTypes.getSelectedItem().toString())) {
-            
-        }
-    }//GEN-LAST:event_btnForwardTestCreationActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox ComboBoxDbTypes;
     private javax.swing.JTextArea area_DescriptionOfTestCase;
-    private javax.swing.JButton btnBackTestCreation;
-    private javax.swing.JButton btnForwardTestCreation;
     private javax.swing.JCheckBox checkBoxMakeTestCopy;
     private javax.swing.JComboBox comboBoxExistingTests;
     private javax.swing.JLabel jLabel2;
@@ -275,7 +245,6 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jtextNameOfTestCase;
     // End of variables declaration//GEN-END:variables
@@ -307,4 +276,26 @@ public class JPanelNameOfTest extends javax.swing.JPanel {
 //        System.out.println(comboModel_ExistingTests.getElementAt(0).toString());
         return true;
     }
+
+    public JComboBox getComboBoxDbTypes() {
+        return ComboBoxDbTypes;
+    }
+
+    public JTextArea getArea_DescriptionOfTestCase() {
+        return area_DescriptionOfTestCase;
+    }
+
+    public JCheckBox getCheckBoxMakeTestCopy() {
+        return checkBoxMakeTestCopy;
+    }
+
+    public DefaultComboBoxModel getComboModel_ExistingTests() {
+        return comboModel_ExistingTests;
+    }
+
+    public JTextField getJtextNameOfTestCase() {
+        return jtextNameOfTestCase;
+    }
+    
+    
 }

@@ -6,9 +6,10 @@ package sdbtester.gui;
 
 import java.awt.CardLayout;
 import java.awt.event.*;
+import java.util.HashMap;
 import javax.swing.JPanel;
 import org.apache.log4j.Logger;
-import sdbtester.TestCaseSettings;
+import sdbtester.TestCaseHelper;
 
 /**
  *
@@ -16,15 +17,19 @@ import sdbtester.TestCaseSettings;
  */
 public class StartForm extends javax.swing.JFrame {
 
-    private TestCaseSettings appSettings;
+    private TestCaseHelper appSettings;
     private static Logger logger = Logger.getLogger(StartForm.class);
+    private HashMap<Integer, String> cardsMap = new HashMap();
+    private int CurrentCard = 0;
+    private CardLayout card = null;
 
     /**
      * Creates new form StartForm
      */
     public StartForm() {
         initComponents();
-        appSettings = TestCaseSettings.getInstance();
+        card = (CardLayout) PanelTestingCards.getLayout();
+        appSettings = TestCaseHelper.getInstance();
         btnBackTestCreation.setEnabled(false);
         btnForwardTestCreation.setEnabled(false);
         jPanelNameOfTest1.getJtextNameOfTestCase().addKeyListener(new KeyAdapter() {
@@ -38,6 +43,33 @@ public class StartForm extends javax.swing.JFrame {
                 }
             }
         });
+
+        jPanelNameOfTest1.getComboBoxExistingTests().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if ((jPanelNameOfTest1.getComboModel_ExistingTests().getSize() > 0) && !jPanelNameOfTest1.getComboModel_ExistingTests().getSelectedItem().equals(jPanelNameOfTest1.getComboModel_ExistingTests().getElementAt(0))) {
+                    btnForwardTestCreation.setEnabled(true);
+                }
+            }
+        });
+
+
+        cardMysqlDbSettings1.getComboSelectMysqlDB().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (cardMysqlDbSettings1.getComboDatabasesModel().getSize() > 0 && !cardMysqlDbSettings1.getComboDatabasesModel().getSelectedItem().toString().equals(cardMysqlDbSettings1.getComboDatabasesModel().getElementAt(0))) {
+                    btnForwardTestCreation.setEnabled(true);
+                } else {
+                    btnForwardTestCreation.setEnabled(false);
+                }
+            }
+        });
+
+        cardsMap.put(0, "CardTestName");
+        cardsMap.put(1, "CardDbConnect");
+        cardsMap.put(2, "CardQueryManager");
 
     }
 
@@ -57,7 +89,8 @@ public class StartForm extends javax.swing.JFrame {
         btnForwardTestCreation = new javax.swing.JButton();
         PanelTestingCards = new javax.swing.JPanel();
         jPanelNameOfTest1 = new sdbtester.gui.CardNameOfTest();
-        dbConnectSettings1 = new sdbtester.gui.CardMysqlDbSettings();
+        cardMysqlDbSettings1 = new sdbtester.gui.CardMysqlDbSettings();
+        cardQueryManager1 = new sdbtester.gui.CardQueryManager();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -67,6 +100,11 @@ public class StartForm extends javax.swing.JFrame {
         jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         btnBackTestCreation.setText("Назад");
+        btnBackTestCreation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackTestCreationActionPerformed(evt);
+            }
+        });
         jPanel6.add(btnBackTestCreation);
 
         btnForwardTestCreation.setText("Вперед");
@@ -78,20 +116,9 @@ public class StartForm extends javax.swing.JFrame {
         jPanel6.add(btnForwardTestCreation);
 
         PanelTestingCards.setLayout(new java.awt.CardLayout());
-        PanelTestingCards.add(jPanelNameOfTest1, "CreateTestCaseCard");
-
-        javax.swing.GroupLayout dbConnectSettings1Layout = new javax.swing.GroupLayout(dbConnectSettings1);
-        dbConnectSettings1.setLayout(dbConnectSettings1Layout);
-        dbConnectSettings1Layout.setHorizontalGroup(
-            dbConnectSettings1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1003, Short.MAX_VALUE)
-        );
-        dbConnectSettings1Layout.setVerticalGroup(
-            dbConnectSettings1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 388, Short.MAX_VALUE)
-        );
-
-        PanelTestingCards.add(dbConnectSettings1, "card3");
+        PanelTestingCards.add(jPanelNameOfTest1, "CardTestName");
+        PanelTestingCards.add(cardMysqlDbSettings1, "CardDbConnect");
+        PanelTestingCards.add(cardQueryManager1, "CardQueryManager");
 
         javax.swing.GroupLayout PanelTestingLayout = new javax.swing.GroupLayout(PanelTesting);
         PanelTesting.setLayout(PanelTestingLayout);
@@ -101,13 +128,13 @@ public class StartForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(PanelTestingCards, javax.swing.GroupLayout.DEFAULT_SIZE, 1003, Short.MAX_VALUE)
+            .addComponent(PanelTestingCards, javax.swing.GroupLayout.DEFAULT_SIZE, 1009, Short.MAX_VALUE)
         );
         PanelTestingLayout.setVerticalGroup(
             PanelTestingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelTestingLayout.createSequentialGroup()
                 .addComponent(PanelTestingCards, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -121,11 +148,11 @@ public class StartForm extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1003, Short.MAX_VALUE)
+            .addGap(0, 1009, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 445, Short.MAX_VALUE)
+            .addGap(0, 456, Short.MAX_VALUE)
         );
 
         jTabbedPainMain.addTab("Настройки", jPanel2);
@@ -138,40 +165,84 @@ public class StartForm extends javax.swing.JFrame {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 6, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(1014, 1014, 1014))
-                    .addComponent(jTabbedPainMain, javax.swing.GroupLayout.PREFERRED_SIZE, 1008, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                        .addGap(1026, 1026, 1026))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jTabbedPainMain)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPainMain)
+                .addComponent(jTabbedPainMain, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     private void btnForwardTestCreationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnForwardTestCreationActionPerformed
-        if (appSettings.setCurrentTestName(jPanelNameOfTest1.getJtextNameOfTestCase().getText(), jPanelNameOfTest1.getComboBoxDbTypes().getSelectedItem().toString())) {
-//            CardLayout card = 
+        switch (CurrentCard) {
+            //CardTestName
+            case 0: {
+                if (jPanelNameOfTest1.getComboModel_ExistingTests().getSize() > 0 && jPanelNameOfTest1.getComboModel_ExistingTests().getSelectedItem().equals(jPanelNameOfTest1.getComboModel_ExistingTests().getElementAt(0))) {
+                    if (jPanelNameOfTest1.getJtextNameOfTestCase().getText().length() > 0) {
+                        String caseName = jPanelNameOfTest1.getJtextNameOfTestCase().getText();
+                        String dbType = jPanelNameOfTest1.getComboBoxDbTypes().getSelectedItem().toString();
+                        String caseDescription = jPanelNameOfTest1.getArea_DescriptionOfTestCase().getText();
+                        if (appSettings.setCurrentTestName(caseName, dbType, caseDescription)) {
+                            goToNextCard(true);
+                            btnForwardTestCreation.setEnabled(appSettings.getTestCurrentDbName().equals(""));
+                            if (btnForwardTestCreation.isEnabled()) {
+                                cardMysqlDbSettings1.getComboDatabasesModel().setSelectedItem(appSettings.getTestCurrentDbName());
+                            }
+                        }
+                    } else {
+                    }
+                } else if (jPanelNameOfTest1.getComboModel_ExistingTests().getSize() > 0) {
+                    if (appSettings.loadTestFromTemplate(jPanelNameOfTest1.getComboModel_ExistingTests().getSelectedItem().toString(), jPanelNameOfTest1.getComboBoxDbTypes().getSelectedItem().toString())) {
+                        goToNextCard(true);
+                        btnForwardTestCreation.setEnabled(appSettings.getTestCurrentDbName().equals(""));
+                        if (btnForwardTestCreation.isEnabled()) {
+                            cardMysqlDbSettings1.getComboDatabasesModel().setSelectedItem(appSettings.getTestCurrentDbName());
+                        }
+                    }
+                }
+                break;
+            }
+            //CardDbConnect
+            case 1: {
+                if (cardMysqlDbSettings1.getComboDatabasesModel().getSize() > 0
+                        && cardMysqlDbSettings1.getMysqlDbHelper().CreateConnectionMysqlForCertainDB(cardMysqlDbSettings1.getComboDatabasesModel().getSelectedItem().toString())) {
+                    appSettings.storeTestCaseSettings(appSettings.getTestCaseName(), appSettings.getTestDbType());
+                    goToNextCard(true);
+                }
+                break;
+            }
+            //CardQueryManager
+            case 2: {
+
+                break;
+            }
+
         }
     }//GEN-LAST:event_btnForwardTestCreationActionPerformed
 
+    private void btnBackTestCreationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackTestCreationActionPerformed
+        goToNextCard(false);
+    }//GEN-LAST:event_btnBackTestCreationActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -190,6 +261,10 @@ public class StartForm extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
+
+
+
                 }
             }
         } catch (ClassNotFoundException ex) {
@@ -226,7 +301,8 @@ public class StartForm extends javax.swing.JFrame {
     private javax.swing.JPanel PanelTestingCards;
     private javax.swing.JButton btnBackTestCreation;
     private javax.swing.JButton btnForwardTestCreation;
-    private sdbtester.gui.CardMysqlDbSettings dbConnectSettings1;
+    private sdbtester.gui.CardMysqlDbSettings cardMysqlDbSettings1;
+    private sdbtester.gui.CardQueryManager cardQueryManager1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
@@ -234,4 +310,23 @@ public class StartForm extends javax.swing.JFrame {
     private sdbtester.gui.CardNameOfTest jPanelNameOfTest1;
     private javax.swing.JTabbedPane jTabbedPainMain;
     // End of variables declaration//GEN-END:variables
+
+    private void goToNextCard(boolean goToNext) {
+        if (goToNext && cardsMap.containsKey(CurrentCard + 1)) {
+            ++CurrentCard;
+            card.show(PanelTestingCards, cardsMap.get(CurrentCard));
+            if (!cardsMap.containsKey(CurrentCard + 1)) {
+                btnForwardTestCreation.setEnabled(false);
+            }
+            btnBackTestCreation.setEnabled(true);
+        } else if (cardsMap.containsKey(CurrentCard - 1)) {
+            --CurrentCard;
+            card.show(PanelTestingCards, cardsMap.get(CurrentCard));
+            if (!cardsMap.containsKey(CurrentCard - 1)) {
+                btnBackTestCreation.setEnabled(false);
+            }
+            btnForwardTestCreation.setEnabled(true);
+
+        }
+    }
 }

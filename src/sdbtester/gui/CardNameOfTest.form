@@ -84,7 +84,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
@@ -94,21 +94,19 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="comboBoxExistingTests" linkSize="7" alignment="0" min="-2" pref="201" max="-2" attributes="0"/>
-                              <Component id="checkBoxMakeTestCopy" linkSize="7" alignment="0" min="-2" pref="251" max="-2" attributes="0"/>
+                              <Component id="comboBoxExistingTests" alignment="0" min="-2" pref="201" max="-2" attributes="0"/>
                               <Component id="ComboBoxDbTypes" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="562" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="612" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jLabel4" linkSize="2" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel5" linkSize="2" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jtextNameOfTestCase" max="32767" attributes="0"/>
+                              <Component id="textNameOfTestCase" max="32767" attributes="0"/>
                               <Component id="jScrollPane2" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -130,22 +128,22 @@
                       <Component id="comboBoxExistingTests" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="checkBoxMakeTestCopy" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel4" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jtextNameOfTestCase" linkSize="4" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
+                      <Component id="textNameOfTestCase" linkSize="4" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <Component id="jLabel5" linkSize="3" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="167" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="jScrollPane2" pref="145" max="32767" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <Component id="jScrollPane2" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -178,9 +176,9 @@
             <Property name="text" type="java.lang.String" value="&#x41d;&#x430;&#x437;&#x432;&#x430;&#x43d;&#x438;&#x435;:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="jtextNameOfTestCase">
+        <Component class="javax.swing.JTextField" name="textNameOfTestCase">
           <Events>
-            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jtextNameOfTestCaseKeyReleased"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="textNameOfTestCaseKeyReleased"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
@@ -204,11 +202,6 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JCheckBox" name="checkBoxMakeTestCopy">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="&#x421;&#x43a;&#x43e;&#x43f;&#x438;&#x440;&#x43e;&#x432;&#x430;&#x442;&#x44c; &#x432; &#x43d;&#x43e;&#x432;&#x44b;&#x439;"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JComboBox" name="comboBoxExistingTests">
           <Properties>
             <Property name="maximumRowCount" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">

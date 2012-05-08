@@ -6,11 +6,11 @@ package sdbtester;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.Calendar;
+import java.security.Timestamp;
+import java.util.Date;
 import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 import sdbtester.gui.StartForm;
-import sdbtester.validators.DbTestValidator;
 
 /**
  *
@@ -20,7 +20,7 @@ public class SdbTester {
 
     public static StartForm startF;
     private static Logger logger = Logger.getLogger(SdbTester.class);
-    private static TestCaseSettings appSettings;
+    private static TestCaseHelper appSettings;
 
     /**
      * @param args the command line arguments
@@ -31,12 +31,19 @@ public class SdbTester {
         setFramePositionCenter(startF);
         logger.info("Show start window");
         startF.setVisible(true);
-        appSettings = TestCaseSettings.getInstance();
+        appSettings = TestCaseHelper.getInstance();
 //        if (appSettings.setCurrentTestName("SuperPumaRenamed1", appSettings.DB_TYPE_MYSQL)){
 //            System.out.println("created");
 //        }
 
 //        DbTestValidator valid = new DbTestValidator();
+//        Timestamp timestamp = new Timestamp((new Date()).getTime());
+//        System.out.println(System.currentTimeMillis());
+//        for(int i = 0; i < 100000; ++i){
+//            System.out.print(9*99 + i);
+//        }
+//System.out.println("");
+//        System.out.println(System.currentTimeMillis());
 
     }
 

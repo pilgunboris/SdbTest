@@ -7,8 +7,10 @@ package sdbtester.gui;
 import java.awt.CardLayout;
 import java.awt.event.*;
 import java.util.HashMap;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.apache.log4j.Logger;
+import sdbtester.Server;
 import sdbtester.TestCaseHelper;
 
 /**
@@ -30,6 +32,7 @@ public class StartForm extends javax.swing.JFrame {
         initComponents();
         card = (CardLayout) PanelTestingCards.getLayout();
         appSettings = TestCaseHelper.getInstance();
+        spinnerAppServerPortNum.setValue(appSettings.getAppServerPort());
         btnBackTestCreation.setEnabled(false);
         btnForwardTestCreation.setEnabled(false);
         jPanelNameOfTest1.getJtextNameOfTestCase().addKeyListener(new KeyAdapter() {
@@ -70,6 +73,7 @@ public class StartForm extends javax.swing.JFrame {
         cardsMap.put(0, "CardTestName");
         cardsMap.put(1, "CardDbConnect");
         cardsMap.put(2, "CardQueryManager");
+        cardsMap.put(3, "CardTestRunning");
 
     }
 
@@ -91,8 +95,13 @@ public class StartForm extends javax.swing.JFrame {
         jPanelNameOfTest1 = new sdbtester.gui.CardNameOfTest();
         cardMysqlDbSettings1 = new sdbtester.gui.CardMysqlDbSettings();
         cardQueryManager1 = new sdbtester.gui.CardQueryManager();
+        cardTestRunning2 = new sdbtester.gui.CardTestRunning();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        btnApplyAppServerPort = new javax.swing.JButton();
+        spinnerAppServerPortNum = new javax.swing.JSpinner();
         jPanel4 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -119,6 +128,7 @@ public class StartForm extends javax.swing.JFrame {
         PanelTestingCards.add(jPanelNameOfTest1, "CardTestName");
         PanelTestingCards.add(cardMysqlDbSettings1, "CardDbConnect");
         PanelTestingCards.add(cardQueryManager1, "CardQueryManager");
+        PanelTestingCards.add(cardTestRunning2, "CardTestRunning");
 
         javax.swing.GroupLayout PanelTestingLayout = new javax.swing.GroupLayout(PanelTesting);
         PanelTesting.setLayout(PanelTestingLayout);
@@ -128,13 +138,13 @@ public class StartForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(PanelTestingCards, javax.swing.GroupLayout.DEFAULT_SIZE, 1009, Short.MAX_VALUE)
+            .addComponent(PanelTestingCards, javax.swing.GroupLayout.DEFAULT_SIZE, 1030, Short.MAX_VALUE)
         );
         PanelTestingLayout.setVerticalGroup(
             PanelTestingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelTestingLayout.createSequentialGroup()
-                .addComponent(PanelTestingCards, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addComponent(PanelTestingCards, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -144,15 +154,60 @@ public class StartForm extends javax.swing.JFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         jTabbedPainMain.addTab("Анализ", jPanel1);
 
+        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel1.setText("Номер порта: ");
+
+        btnApplyAppServerPort.setText("Применить");
+        btnApplyAppServerPort.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnApplyAppServerPortActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnApplyAppServerPort))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spinnerAppServerPortNum, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(spinnerAppServerPortNum, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnApplyAppServerPort)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1009, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(702, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 456, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(405, Short.MAX_VALUE))
         );
 
         jTabbedPainMain.addTab("Настройки", jPanel2);
@@ -165,7 +220,7 @@ public class StartForm extends javax.swing.JFrame {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 6, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -178,7 +233,7 @@ public class StartForm extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(1026, 1026, 1026))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jTabbedPainMain)
                         .addContainerGap())))
         );
@@ -186,7 +241,7 @@ public class StartForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPainMain, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPainMain)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -233,8 +288,12 @@ public class StartForm extends javax.swing.JFrame {
             }
             //CardQueryManager
             case 2: {
-
+                goToNextCard(true);
+                new Server(appSettings.getAppServerPort());
                 break;
+            }
+            case 3: {
+                
             }
 
         }
@@ -243,6 +302,13 @@ public class StartForm extends javax.swing.JFrame {
     private void btnBackTestCreationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackTestCreationActionPerformed
         goToNextCard(false);
     }//GEN-LAST:event_btnBackTestCreationActionPerformed
+
+    private void btnApplyAppServerPortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyAppServerPortActionPerformed
+        appSettings.setAppServerPort(Integer.parseInt(spinnerAppServerPortNum.getValue().toString()));
+        if (appSettings.storeGlobalSettings()) {
+            JOptionPane.showMessageDialog(null, "Номер порта успешно изменен", "Info", JOptionPane.OK_OPTION);
+        }
+    }//GEN-LAST:event_btnApplyAppServerPortActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -299,16 +365,21 @@ public class StartForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelTesting;
     private javax.swing.JPanel PanelTestingCards;
+    private javax.swing.JButton btnApplyAppServerPort;
     private javax.swing.JButton btnBackTestCreation;
     private javax.swing.JButton btnForwardTestCreation;
     private sdbtester.gui.CardMysqlDbSettings cardMysqlDbSettings1;
     private sdbtester.gui.CardQueryManager cardQueryManager1;
+    private sdbtester.gui.CardTestRunning cardTestRunning2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private sdbtester.gui.CardNameOfTest jPanelNameOfTest1;
     private javax.swing.JTabbedPane jTabbedPainMain;
+    private javax.swing.JSpinner spinnerAppServerPortNum;
     // End of variables declaration//GEN-END:variables
 
     private void goToNextCard(boolean goToNext) {

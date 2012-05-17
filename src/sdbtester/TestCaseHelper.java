@@ -4,6 +4,7 @@
  */
 package sdbtester;
 
+import cdbtest.DataForClients;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,11 +23,11 @@ import org.apache.log4j.Logger;
 public class TestCaseHelper {
 
     //constants
-    public final String TEST_CASES_MAIN_PATH = "DbTestCases/";
-    public final String SETTINGS_APP_PROP_FILE = "app_settings.properties";
-    public final String SETTINGS_TEST_CASE_PROP_FILE = "test_case.properties";
-    public final String DB_TYPE_MYSQL = "mysql";     //default
-    public final String DB_TYPE_MONGO = "mongo";
+    public static final String TEST_CASES_MAIN_PATH = "DbTestCases/";
+    public static final String SETTINGS_APP_PROP_FILE = "global_settings.properties";
+    public static final String SETTINGS_TEST_CASE_PROP_FILE = "test_case.properties";
+    public static final String DB_TYPE_MYSQL = "mysql";     //default
+    public static final String DB_TYPE_MONGO = "mongo";
     //properties constants
     private static final String PROPERTY_CASE_NAME = "test_case.name";
     private static final String PROPERTY_CASE_DESCRIPTION = "test_case.description";
@@ -39,12 +40,17 @@ public class TestCaseHelper {
     private static final String PROPERTY_QUERY_SELECT_LIST = "test_case.query.select.list";
     private static final String PROPERTY_QUERY_UPDATE_LIST = "test_case.query.update.list";
     private static final String PROPERTY_QUERY_DELETE_LIST = "test_case.query.delete.list";
+    private static final String PROPERTY_HAS_INSERT = "test_case.query.has.insert";
+    private static final String PROPERTY_HAS_SELECT = "test_case.query.has.select";
+    private static final String PROPERTY_HAS_UPDATE = "test_case.query.has.update";
+    private static final String PROPERTY_HAS_DELETE = "test_case.query.has.delete";
     private static final String ARRAY_DELIM = "!&!";
-    //fields
+    //global properties
+    private static final String PROPERTY_APP_SERVER_PORT = "app.server.port";
+    //test case fields
     private String TestCaseName = "";
     private String TestCaseDescription = "";
     private String TestDbType = "";
-//    private String TestDbName = "";
     private Connection DbConnection = null;
     private String TestCurrentDbName = "";
     private String TestDbLogin = "";
@@ -55,6 +61,17 @@ public class TestCaseHelper {
     private ArrayList<String> QueriesSelect = new ArrayList<String>(0);
     private ArrayList<String> QueriesUpdate = new ArrayList<String>(0);
     private ArrayList<String> QueriesDelete = new ArrayList<String>(0);
+    private DataForClients DataSetForClients = new DataForClients();
+    private int ClientThreadsNum = 10;
+    private int ClientTestRequestNum = 100;
+    private boolean HasInsert = true;
+    private boolean HasSelect = true;
+    private boolean HasUpdate = true;
+    private boolean HasDelete = true;
+    //global fields
+//    private 
+    private int AppServerPort = 3223;
+    private int CurrentTestStatus = -1;
 //initialized fields
     private static Logger logger = Logger.getLogger(TestCaseHelper.class);
     private static TestCaseHelper instance = new TestCaseHelper();
@@ -66,6 +83,63 @@ public class TestCaseHelper {
         return instance;
     }
 
+    public boolean setDataForClientsFields() {
+        try {
+            DataSetForClients.setClientTestRequestNum(this.ClientTestRequestNum);
+            DataSetForClients.setClientThreadsNum(this.ClientThreadsNum);
+            DataSetForClients.setDbAdress(this.TestDbAddress);
+            DataSetForClients.setDbLogin(this.TestDbLogin);
+            DataSetForClients.setDbPass(this.TestDbPass);
+            DataSetForClients.setDbPort(this.TestDbPort);
+            DataSetForClients.setDbType(this.TestDbType);
+            DataSetForClients.setQueriesInsert(this.QueriesInsert);
+            DataSetForClients.setQueriesSelect(this.QueriesSelect);
+            DataSetForClients.setQueriesUpdate(this.QueriesUpdate);
+            DataSetForClients.setQueriesDelete(this.QueriesDelete);
+//            DataSetForClients.setTestStatus(this.);
+        } catch (Exception e) {
+            logger.warn("setDataForClientsFields  \n" + e.getStackTrace());
+            JOptionPane.showMessageDialog(null, e.getMessage() + e.getStackTrace(), "setDataForClientsFields", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean loadGlobalSettings() {
+        try {
+            Properties prop = new Properties();
+            prop.load(new FileInputStream(SETTINGS_APP_PROP_FILE));
+            this.setAppServerPort(Integer.parseInt(prop.getProperty(PROPERTY_APP_SERVER_PORT)));
+
+        } catch (IOException e) {
+            logger.warn("Cannot load global properties. Will be created new " + SETTINGS_APP_PROP_FILE + " file  \n" + e.getStackTrace());
+//            JOptionPane.showMessageDialog(null, e.getMessage() + e.getStackTrace(), "Cannot find properties.", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } catch (NumberFormatException e) {
+            logger.warn("Wrong property format  \n" + e.getStackTrace());
+            JOptionPane.showMessageDialog(null, e.getMessage() + e.getStackTrace(), "Wrong property format.", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean storeGlobalSettings() {
+        try {
+            Properties prop = new Properties();
+
+            prop.setProperty(PROPERTY_APP_SERVER_PORT, String.valueOf(this.getAppServerPort()));
+
+            prop.store(new FileOutputStream(SETTINGS_APP_PROP_FILE), null);
+        } catch (IOException e) {
+            logger.warn("Cannot store global properties  \n" + e.getStackTrace());
+            JOptionPane.showMessageDialog(null, e.getMessage() + e.getStackTrace(), "Cannot store properties.", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+//    public boolean
     public boolean loadTestFromTemplate(String caseName, String dbType) {
         try {
             Properties prop = new Properties();
@@ -85,6 +159,13 @@ public class TestCaseHelper {
             this.setQueriesSelect(stringToList(prop.getProperty(PROPERTY_QUERY_SELECT_LIST)));
             this.setQueriesUpdate(stringToList(prop.getProperty(PROPERTY_QUERY_UPDATE_LIST)));
             this.setQueriesDelete(stringToList(prop.getProperty(PROPERTY_QUERY_DELETE_LIST)));
+            //has queries?
+            this.setHasInsert(strToBool(prop.getProperty(PROPERTY_HAS_INSERT)));
+            this.setHasSelect(strToBool(prop.getProperty(PROPERTY_HAS_SELECT)));
+            this.setHasUpdate(strToBool(prop.getProperty(PROPERTY_HAS_UPDATE)));
+            this.setHasDelete(strToBool(prop.getProperty(PROPERTY_HAS_DELETE)));
+
+
         } catch (IOException e) {
             logger.warn("Cannot load properties  \n" + e.getStackTrace());
             JOptionPane.showMessageDialog(null, e.getMessage() + e.getStackTrace(), "Cannot find properties.", JOptionPane.ERROR_MESSAGE);
@@ -118,6 +199,11 @@ public class TestCaseHelper {
             prop.setProperty(PROPERTY_QUERY_SELECT_LIST, listToString(QueriesSelect));
             prop.setProperty(PROPERTY_QUERY_UPDATE_LIST, listToString(QueriesUpdate));
             prop.setProperty(PROPERTY_QUERY_DELETE_LIST, listToString(QueriesDelete));
+            //has queries?
+            prop.setProperty(PROPERTY_HAS_INSERT, boolToStr(this.HasInsert));
+            prop.setProperty(PROPERTY_HAS_SELECT, boolToStr(this.HasSelect));
+            prop.setProperty(PROPERTY_HAS_UPDATE, boolToStr(this.HasUpdate));
+            prop.setProperty(PROPERTY_HAS_DELETE, boolToStr(this.HasDelete));
             ///storing
             prop.store(new FileOutputStream(TEST_CASES_MAIN_PATH + dbType + "/" + caseName + "/" + SETTINGS_TEST_CASE_PROP_FILE), null);
         } catch (IOException e) {
@@ -196,6 +282,17 @@ public class TestCaseHelper {
             JOptionPane.showMessageDialog(null, e.getMessage() + e.getStackTrace(), "Not enough mana!", JOptionPane.ERROR_MESSAGE);
         }
         return res;
+    }
+
+    private String boolToStr(boolean has) {
+        return (has ? "1" : "0");
+    }
+
+    private boolean strToBool(String has) {
+        if(has == null){
+            return true;
+        }
+        return (has.equals("0") ? false : true);
     }
 
     public String getTestCaseName() {
@@ -297,11 +394,84 @@ public class TestCaseHelper {
     public void setQueriesUpdate(ArrayList<String> QueriesUpdate) {
         this.QueriesUpdate = QueriesUpdate;
     }
-//    public String getTestDbName() {
-//        return TestDbName;
+
+    public int getAppServerPort() {
+        return AppServerPort;
+    }
+
+    public void setAppServerPort(int AppServerPort) {
+        this.AppServerPort = AppServerPort;
+    }
+
+    public DataForClients getDataSetForClients() {
+        return DataSetForClients;
+    }
+
+    public void setDataSetForClients(DataForClients DataSetForClients) {
+        setDataForClientsFields();
+        this.DataSetForClients = DataSetForClients;
+    }
+
+    public int getClientTestRequestNum() {
+        return ClientTestRequestNum;
+    }
+
+    public void setClientTestRequestNum(int ClientTestRequestNum) {
+        this.ClientTestRequestNum = ClientTestRequestNum;
+    }
+
+    public int getClientThreadsNum() {
+        return ClientThreadsNum;
+    }
+
+    public void setClientThreadsNum(int ClientThreadsNum) {
+        this.ClientThreadsNum = ClientThreadsNum;
+    }
+
+//    public boolean isFlagTestStarted() {
+//        return FlagTestStarted;
 //    }
 //
-//    public void setTestDbName(String TestDbName) {
-//        this.TestDbName = TestDbName;
+//    public void setFlagTestStarted(boolean FlagTestStarted) {
+//        this.FlagTestStarted = FlagTestStarted;
 //    }
+    public int getCurrentTestStatus() {
+        return CurrentTestStatus;
+    }
+
+    public void setCurrentTestStatus(int CurrentTestStatus) {
+        this.CurrentTestStatus = CurrentTestStatus;
+    }
+
+    public boolean isHasDelete() {
+        return HasDelete;
+    }
+
+    public void setHasDelete(boolean HasDelete) {
+        this.HasDelete = HasDelete;
+    }
+
+    public boolean isHasInsert() {
+        return HasInsert;
+    }
+
+    public void setHasInsert(boolean HasInsert) {
+        this.HasInsert = HasInsert;
+    }
+
+    public boolean isHasSelect() {
+        return HasSelect;
+    }
+
+    public void setHasSelect(boolean HasSelect) {
+        this.HasSelect = HasSelect;
+    }
+
+    public boolean isHasUpdate() {
+        return HasUpdate;
+    }
+
+    public void setHasUpdate(boolean HasUpdate) {
+        this.HasUpdate = HasUpdate;
+    }
 }

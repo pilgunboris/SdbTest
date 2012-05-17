@@ -26,24 +26,32 @@ public class SdbTester {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        appSettings = TestCaseHelper.getInstance();
+        if (!appSettings.loadGlobalSettings()) {
+            appSettings.storeGlobalSettings();
+        }
         startF = new StartForm();
         setFramePositionCenter(startF);
-        logger.info("Show start window");
         startF.setVisible(true);
-        appSettings = TestCaseHelper.getInstance();
-//        if (appSettings.setCurrentTestName("SuperPumaRenamed1", appSettings.DB_TYPE_MYSQL)){
-//            System.out.println("created");
-//        }
-
-//        DbTestValidator valid = new DbTestValidator();
-//        Timestamp timestamp = new Timestamp((new Date()).getTime());
-//        System.out.println(System.currentTimeMillis());
-//        for(int i = 0; i < 100000; ++i){
-//            System.out.print(9*99 + i);
-//        }
-//System.out.println("");
-//        System.out.println(System.currentTimeMillis());
+        logger.info("Show start window");
+        //        try{
+        //        Runtime.getRuntime().exec("gedit");
+        //        }catch(Exception e){
+        //            System.out.println("error");
+        //        }
+//        System.out.println(appSettings.getAppServerPort());
+//        new Server(appSettings.getAppServerPort());
+        //        if (appSettings.setCurrentTestName("SuperPumaRenamed1", appSettings.DB_TYPE_MYSQL)){
+        //            System.out.println("created");
+        //        }
+        //        DbTestValidator valid = new DbTestValidator();
+        //        Timestamp timestamp = new Timestamp((new Date()).getTime());
+        //        System.out.println(System.currentTimeMillis());
+        //        for(int i = 0; i < 100000; ++i){
+        //            System.out.print(9*99 + i);
+        //        }
+        //System.out.println("");
+        //        System.out.println(System.currentTimeMillis());
 
     }
 

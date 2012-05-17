@@ -357,16 +357,16 @@ public class CardQueryManager extends javax.swing.JPanel {
     }//GEN-LAST:event_btnMakeQueryTestActionPerformed
 
     private void btnEditSelectedQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditSelectedQueryActionPerformed
-        if (queryListModel.getSelectedItem() != null) {
-            areaQueryEditor.setText(queryListModel.getSelectedItem().toString());
-            editingQuery = comboQueries.getSelectedIndex();
-
-            JComboBox _petList = (JComboBox) evt.getSource();
-            ComboBoxModel petList = (ComboBoxModel) comboQueries.getModel();
+//        if (queryListModel.getSelectedItem() != null) {
+//            areaQueryEditor.setText(queryListModel.getSelectedItem().toString());
+//            editingQuery = comboQueries.getSelectedIndex();
+//
+//            JComboBox _petList = (JComboBox) evt.getSource();
+//            ComboBoxModel petList = (ComboBoxModel) comboQueries.getModel();
 //            int id = 
 //            System.out.println("comboQueries.getSelectedIndex()");
-            System.out.println(queryListModel.getIndexOf(queryListModel.getSelectedItem()));
-        }
+//            System.out.println(queryListModel.getIndexOf(queryListModel.getSelectedItem()));
+//        }
 
     }//GEN-LAST:event_btnEditSelectedQueryActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

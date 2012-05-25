@@ -6,8 +6,6 @@ package sdbtester;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.security.Timestamp;
-import java.util.Date;
 import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 import sdbtester.gui.StartForm;
@@ -20,13 +18,13 @@ public class SdbTester {
 
     public static StartForm startF;
     private static Logger logger = Logger.getLogger(SdbTester.class);
-    private static TestCaseHelper appSettings;
+    private static STestCaseHelper appSettings;
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        appSettings = TestCaseHelper.getInstance();
+        appSettings = STestCaseHelper.getInstance();
         if (!appSettings.loadGlobalSettings()) {
             appSettings.storeGlobalSettings();
         }
@@ -34,25 +32,8 @@ public class SdbTester {
         setFramePositionCenter(startF);
         startF.setVisible(true);
         logger.info("Show start window");
-        //        try{
-        //        Runtime.getRuntime().exec("gedit");
-        //        }catch(Exception e){
-        //            System.out.println("error");
-        //        }
-//        System.out.println(appSettings.getAppServerPort());
-//        new Server(appSettings.getAppServerPort());
-        //        if (appSettings.setCurrentTestName("SuperPumaRenamed1", appSettings.DB_TYPE_MYSQL)){
-        //            System.out.println("created");
-        //        }
-        //        DbTestValidator valid = new DbTestValidator();
-        //        Timestamp timestamp = new Timestamp((new Date()).getTime());
-        //        System.out.println(System.currentTimeMillis());
-        //        for(int i = 0; i < 100000; ++i){
-        //            System.out.print(9*99 + i);
-        //        }
-        //System.out.println("");
-        //        System.out.println(System.currentTimeMillis());
 
+        new Thread(new Server(appSettings.getAppServerPort())).start();
     }
 
     public static void setFramePositionCenter(JFrame window) {

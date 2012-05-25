@@ -4,10 +4,11 @@
  */
 package sdbtester.gui;
 
-import sdbtester.Server;
-import sdbtester.TestCaseHelper;
-
-
+import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import sdbtester.STestCaseHelper;
 
 /**
  *
@@ -15,14 +16,14 @@ import sdbtester.TestCaseHelper;
  */
 public class CardTestRunning extends javax.swing.JPanel {
 
-       private static TestCaseHelper appSettings;
-    
+    private static STestCaseHelper appSettings;
+
     /**
      * Creates new form CardTestRunning
      */
     public CardTestRunning() {
         initComponents();
-        appSettings = TestCaseHelper.getInstance();
+        appSettings = STestCaseHelper.getInstance();
     }
 
     /**
@@ -39,25 +40,21 @@ public class CardTestRunning extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
+        spinnerThreadsNumber = new javax.swing.JSpinner();
         jLabel3 = new javax.swing.JLabel();
-        jSpinner2 = new javax.swing.JSpinner();
-        jButton1 = new javax.swing.JButton();
+        spinnerIterationsNum = new javax.swing.JSpinner();
+        btnStartStopTesting = new javax.swing.JButton();
         checkInsert = new javax.swing.JCheckBox();
         checkSelect = new javax.swing.JCheckBox();
         checkDelete = new javax.swing.JCheckBox();
-        CheckUpdate = new javax.swing.JCheckBox();
+        checkUpdate = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         areaTestFullInfo = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         areaTestLog = new javax.swing.JTextArea();
-        jPanel4 = new javax.swing.JPanel();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jProgressBar2 = new javax.swing.JProgressBar();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jProgressBar3 = new javax.swing.JProgressBar();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
 
@@ -84,38 +81,66 @@ public class CardTestRunning extends javax.swing.JPanel {
 
         jLabel1.setText("Потоков в тесте:");
 
+        spinnerThreadsNumber.setValue(10);
+
         jLabel3.setText("Запросов в тесте:");
 
-        jButton1.setText("Начать тестирование");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        spinnerIterationsNum.setValue(100);
+
+        btnStartStopTesting.setText("Запустить");
+        btnStartStopTesting.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnStartStopTestingActionPerformed(evt);
             }
         });
 
+        checkInsert.setSelected(true);
         checkInsert.setText("INSERT");
+        checkInsert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkInsertActionPerformed(evt);
+            }
+        });
 
+        checkSelect.setSelected(true);
         checkSelect.setText("SELECT");
+        checkSelect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkSelectActionPerformed(evt);
+            }
+        });
 
+        checkDelete.setSelected(true);
         checkDelete.setText("DELETE");
+        checkDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkDeleteActionPerformed(evt);
+            }
+        });
 
-        CheckUpdate.setText("UPDATE");
+        checkUpdate.setSelected(true);
+        checkUpdate.setText("UPDATE");
+        checkUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkUpdateActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jSpinner2, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
-                            .addComponent(jSpinner1))
+                            .addComponent(spinnerIterationsNum, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
+                            .addComponent(spinnerThreadsNumber))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(checkInsert)
@@ -123,11 +148,12 @@ public class CardTestRunning extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(checkDelete)
-                            .addComponent(CheckUpdate)))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(210, 210, 210)
-                        .addComponent(jButton1)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(checkUpdate))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnStartStopTesting)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,24 +161,24 @@ public class CardTestRunning extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(CheckUpdate)
+                        .addComponent(checkUpdate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(checkDelete))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
-                            .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(spinnerThreadsNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(spinnerIterationsNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(checkInsert)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(checkSelect)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addComponent(btnStartStopTesting)
+                .addContainerGap())
         );
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("Информация о тесте"));
@@ -166,40 +192,6 @@ public class CardTestRunning extends javax.swing.JPanel {
         areaTestLog.setColumns(20);
         areaTestLog.setRows(5);
         jScrollPane2.setViewportView(areaTestLog);
-
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Статус"));
-
-        jLabel4.setText("Текущий:");
-
-        jLabel5.setText("Общий:");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jProgressBar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jProgressBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5))
-                .addContainerGap())
-        );
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -222,27 +214,27 @@ public class CardTestRunning extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane2)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
+                    .addComponent(jProgressBar3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(1, 1, 1)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                        .addComponent(jProgressBar3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2))
                 .addContainerGap())
         );
@@ -269,34 +261,85 @@ public class CardTestRunning extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        new Server(appSettings.getAppServerPort());
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnStartStopTestingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartStopTestingActionPerformed
+        if (!appSettings.isCurrentTestStarted() && appSettings.resetResultsArrays()) {
+            appSettings.setClientThreadsNum(Integer.parseInt(spinnerThreadsNumber.getValue().toString()));
+            appSettings.setClientTestRequestNum(Integer.parseInt(spinnerIterationsNum.getValue().toString()));
+            appSettings.setCurrentTestStarted(true);
+            btnStartStopTesting.setText("Остановить");
+        } else if (JOptionPane.showConfirmDialog(null, "Остановить тестирование?", "Подтверждение", JOptionPane.OK_CANCEL_OPTION) == 0) {
+            appSettings.setCurrentTestStarted(false);
+            btnStartStopTesting.setText("Запустить");
+        }
+    }//GEN-LAST:event_btnStartStopTestingActionPerformed
 
+    private void checkInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkInsertActionPerformed
+        appSettings.setHasInsert(checkInsert.isSelected());
+    }//GEN-LAST:event_checkInsertActionPerformed
+
+    private void checkSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkSelectActionPerformed
+        appSettings.setHasSelect(checkSelect.isSelected());
+    }//GEN-LAST:event_checkSelectActionPerformed
+
+    private void checkUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkUpdateActionPerformed
+        appSettings.setHasUpdate(checkUpdate.isSelected());
+    }//GEN-LAST:event_checkUpdateActionPerformed
+
+    private void checkDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkDeleteActionPerformed
+        appSettings.setHasDelete(checkDelete.isSelected());
+    }//GEN-LAST:event_checkDeleteActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox CheckUpdate;
     private javax.swing.JTextArea areaTestFullInfo;
     private javax.swing.JTextArea areaTestLog;
+    private javax.swing.JButton btnStartStopTesting;
     private javax.swing.JCheckBox checkDelete;
     private javax.swing.JCheckBox checkInsert;
     private javax.swing.JCheckBox checkSelect;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JCheckBox checkUpdate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JProgressBar jProgressBar2;
+    private javax.swing.JProgressBar jProgressBar3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JSpinner jSpinner2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JSpinner spinnerIterationsNum;
+    private javax.swing.JSpinner spinnerThreadsNumber;
     // End of variables declaration//GEN-END:variables
+
+    public JProgressBar getjProgressBar3() {
+        return jProgressBar3;
+    }
+
+    public void setjProgressBar3(JProgressBar jProgressBar3) {
+        this.jProgressBar3 = jProgressBar3;
+    }
+
+    public JTextArea getAreaTestFullInfo() {
+        return areaTestFullInfo;
+    }
+
+    public void setAreaTestFullInfo(JTextArea areaTestFullInfo) {
+        this.areaTestFullInfo = areaTestFullInfo;
+    }
+
+    public JTextArea getAreaTestLog() {
+        return areaTestLog;
+    }
+
+    public void setAreaTestLog(JTextArea areaTestLog) {
+        this.areaTestLog = areaTestLog;
+    }
+
+    public JTable getjTable1() {
+        return jTable1;
+    }
+
+    public void setjTable1(JTable jTable1) {
+        this.jTable1 = jTable1;
+    }
 }

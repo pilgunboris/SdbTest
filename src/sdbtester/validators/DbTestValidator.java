@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
-import sdbtester.TestCaseHelper;
+import sdbtester.STestCaseHelper;
 
 /**
  *
@@ -19,7 +19,7 @@ public class DbTestValidator {
     private Pattern PatInt = Pattern.compile("[1,2,3,4,5]{1}");
     private Pattern PatFloat = Pattern.compile("[0]{1}[\u002E]{1}\\d{1,10}?");
     private Pattern PatEnDigit = Pattern.compile("^\\w+$");
-    private static Logger logger = Logger.getLogger(TestCaseHelper.class);
+    private static Logger logger = Logger.getLogger(STestCaseHelper.class);
 
     /**
      * method check is str == integer or not

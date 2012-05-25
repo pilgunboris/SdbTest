@@ -101,26 +101,27 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="comboQueries" max="32767" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace min="0" pref="504" max="32767" attributes="0"/>
-                                  <Component id="btnEditSelectedQuery" min="-2" max="-2" attributes="0"/>
+                                  <Component id="labelStatusEditOrNew" min="-2" pref="154" max="-2" attributes="0"/>
+                                  <EmptySpace pref="162" max="32767" attributes="0"/>
+                                  <Component id="btnEditSelectedQuery" linkSize="1" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="btnRemoveSelectedQuery" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnRemoveSelectedQuery" linkSize="1" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <Component id="comboQueries" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="labelTimeoutIndicator" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="btnMakeQueryTest" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnMakeQueryTest" linkSize="1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnAddQueryToList" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnAddQueryToList" linkSize="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -144,6 +145,8 @@
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="btnRemoveSelectedQuery" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="btnEditSelectedQuery" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="labelStatusEditOrNew" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
@@ -168,7 +171,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="&#x422;&#x438;&#x43f; &#x437;&#x430;&#x43f;&#x440;&#x43e;&#x441;&#x430;"/>
+                <TitledBorder title="&#x41a;&#x430;&#x442;&#x435;&#x433;&#x43e;&#x440;&#x438;&#x44f;"/>
               </Border>
             </Property>
           </Properties>
@@ -295,6 +298,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="&#x423;&#x434;&#x430;&#x43b;&#x438;&#x442;&#x44c;"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRemoveSelectedQueryActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnMakeQueryTest">
           <Properties>
@@ -310,6 +316,19 @@
               <Font name="Liberation Mono" size="18" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" value="0 &#x441;&#x435;&#x43a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel3">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x420;&#x435;&#x436;&#x438;&#x43c;:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="labelStatusEditOrNew">
+          <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="66" green="66" red="ff" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="&#x43d;&#x43e;&#x432;&#x44b;&#x439; &#x437;&#x430;&#x43f;&#x440;&#x43e;&#x441;"/>
           </Properties>
         </Component>
       </SubComponents>

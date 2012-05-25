@@ -8,8 +8,10 @@ import java.awt.Color;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import org.apache.log4j.Logger;
-import sdbtester.MysqlDbHelper;
-import sdbtester.TestCaseHelper;
+import sdbtester.DataBase;
+import sdbtester.SDataBaseFactory;
+import sdbtester.factory_beans.SDataBaseMysql;
+import sdbtester.STestCaseHelper;
 
 /**
  *
@@ -18,8 +20,8 @@ import sdbtester.TestCaseHelper;
 public class CardMysqlDbSettings extends javax.swing.JPanel {
 
     private DefaultComboBoxModel comboDatabasesModel = null;
-    private TestCaseHelper appSettings = null;
-    private MysqlDbHelper mysqlDbHelper = null;
+    private STestCaseHelper appSettings = null;
+    private DataBase db = null;
     private static Logger logger = Logger.getLogger(CardMysqlDbSettings.class);
 
     /**
@@ -27,11 +29,9 @@ public class CardMysqlDbSettings extends javax.swing.JPanel {
      */
     public CardMysqlDbSettings() {
         initComponents();
-        appSettings = TestCaseHelper.getInstance();
+        appSettings = STestCaseHelper.getInstance();
         comboDatabasesModel = new DefaultComboBoxModel();
         comboSelectMysqlDB.setModel(comboDatabasesModel);
-        mysqlDbHelper = new MysqlDbHelper();
-
     }
 
     /**
@@ -204,8 +204,9 @@ public class CardMysqlDbSettings extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (mysqlDbHelper.CreateConnectionMysql(textAddress.getText(), textPort.getText(), textLogin.getText(), new String(textPass.getPassword()))) {
-            comboDatabasesModel = new DefaultComboBoxModel(mysqlDbHelper.getDbList().toArray());
+        db = SDataBaseFactory.getDataBase(appSettings.getTestDbType());
+        if (db.CreateDataBaseConnection(textAddress.getText(), textPort.getText(), textLogin.getText(), new String(textPass.getPassword()))) {
+            comboDatabasesModel = new DefaultComboBoxModel(db.getDbList().toArray());
             comboSelectMysqlDB.setModel(comboDatabasesModel);
             comboSelectMysqlDB.setEnabled(true);
             labelConnectIndicator.setText("подключен");
@@ -258,8 +259,7 @@ public class CardMysqlDbSettings extends javax.swing.JPanel {
         return comboDatabasesModel;
     }
 
-    public MysqlDbHelper getMysqlDbHelper() {
-        return mysqlDbHelper;
+    public DataBase getDataBase() {
+        return db;
     }
-    
 }

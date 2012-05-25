@@ -2,38 +2,39 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package sdbtester;
+package sdbtester.factory_beans;
 
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import sdbtester.DataBase;
+import sdbtester.STestCaseHelper;
 
 /**
  *
  * @author boris
  */
-public class MysqlDbHelper {
+public class SDataBaseMysql implements DataBase {
 
     //constants
     public final String DB_DRIVER_MYSQL = "com.mysql.jdbc.Driver";
     ////
-    private static Logger logger = Logger.getLogger(MysqlDbHelper.class);
-    private TestCaseHelper appSettings = null;
+    private static Logger logger = Logger.getLogger(SDataBaseMysql.class);
+    private STestCaseHelper appSettings = null;
 
-    public MysqlDbHelper() {
-        appSettings = TestCaseHelper.getInstance();
+    public SDataBaseMysql() {
+        appSettings = STestCaseHelper.getInstance();
     }
 
-    public boolean CreateConnectionMysql(String address, String port, String login, String pass) {
+    @Override
+    public boolean CreateDataBaseConnection(String address, String port, String login, String pass) {
         appSettings.setTestDbAddress(address);
         appSettings.setTestDbPort(port);
         appSettings.setTestDbLogin(login);
         appSettings.setTestDbPass(pass);
+        Connection con = null;
         if (!checkForConnectionParams()) {
             return false;
         }
@@ -41,36 +42,43 @@ public class MysqlDbHelper {
             appSettings.setTestCurrentDbName("mysql");
         }
         try {
-            if (appSettings.getDbConnection() != null) {
-                appSettings.getDbConnection().close();
+            try {
+                if (appSettings.getDbConnection() != null) {
+                    ((Connection) appSettings.getDbConnection()).close();
+                }
+            } catch (Exception e) {
+                logger.error("Cannot close connection");
             }
             Class.forName(DB_DRIVER_MYSQL);
             String DbUrl = "jdbc:mysql://" + appSettings.getTestDbAddress().toString() + ":" + appSettings.getTestDbPort() + "/" + appSettings.getTestCurrentDbName();
             logger.info(DbUrl);
-            appSettings.setDbConnection(DriverManager.getConnection(DbUrl, appSettings.getTestDbLogin(), appSettings.getTestDbPass()));
+            con = DriverManager.getConnection(DbUrl, appSettings.getTestDbLogin(), appSettings.getTestDbPass());
             logger.info("Connected to " + appSettings.getTestCurrentDbName());
         } catch (Exception e) {
             logger.warn("Cannot connect to mysql DB  \n" + e.getStackTrace());
             JOptionPane.showMessageDialog(null, e.getMessage(), "Cannot connect to mysql DB!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+        appSettings.setDbConnection(con);
         return true;
     }
 
-    public boolean CreateConnectionMysqlForCertainDB(String dbName) {
+    @Override
+    public boolean CreateConnectionForCertainDB(String dbName) {
         appSettings.setTestCurrentDbName(dbName);
-        return this.CreateConnectionMysql(
+        return this.CreateDataBaseConnection(
                 appSettings.getTestDbAddress(),
                 appSettings.getTestDbPort(),
                 appSettings.getTestDbLogin(),
                 appSettings.getTestDbPass());
     }
 
+    @Override
     public ArrayList getDbList() {
         ArrayList<String> databases = new ArrayList<String>();
         databases.add("----- не выбрано -----");
         try {
-            Statement stmt = appSettings.getDbConnection().createStatement();
+            Statement stmt = ((Connection) appSettings.getDbConnection()).createStatement();
             ResultSet schemas = stmt.executeQuery("SHOW DATABASES;");
             while (schemas.next()) {
                 if (!Arrays.asList(new String[]{"mysql", "information_schema", "performance_schema"}).contains(schemas.getString(1).toString().trim())) {
@@ -86,7 +94,8 @@ public class MysqlDbHelper {
         return databases;
     }
 
-    private boolean checkForConnectionParams() {
+    @Override
+    public boolean checkForConnectionParams() {
         if (appSettings.getTestDbPort().isEmpty()
                 || appSettings.getTestDbAddress().isEmpty()
                 || appSettings.getTestDbLogin().isEmpty()) {
@@ -95,20 +104,23 @@ public class MysqlDbHelper {
         return true;
     }
 
-    public long checkQuery(String query, String queryType) {
+    @Override
+    public long executeDataBaseQuery(String query, String queryType) {
         if (!checkConnection()) {
-            CreateConnectionMysqlForCertainDB(appSettings.getTestCurrentDbName());
+            CreateConnectionForCertainDB(appSettings.getTestCurrentDbName());
         }
-        long start = 0;
-        long end = 0;
+        long start;
+        long end;
         try {
-            Statement stmt = appSettings.getDbConnection().createStatement();
+            Statement stmt = ((Connection) appSettings.getDbConnection()).createStatement();
             if (queryType.toLowerCase().equals("select")) {
                 start = System.currentTimeMillis();
+                System.out.println(query);
                 ResultSet rs = stmt.executeQuery(query);
                 end = System.currentTimeMillis();
             } else {
                 start = System.currentTimeMillis();
+                System.out.println(query);
                 stmt.executeUpdate(query);
                 end = System.currentTimeMillis();
 
@@ -122,12 +134,25 @@ public class MysqlDbHelper {
         return (end - start);
     }
 
+    @Override
     public boolean checkConnection() {
         try {
-            Statement stmt = appSettings.getDbConnection().createStatement();
+            Statement stmt = ((Connection) appSettings.getDbConnection()).createStatement();
             ResultSet schemas = stmt.executeQuery("SHOW TABLES;");
         } catch (SQLException e) {
             logger.warn("Connection is lost!  \n" + e.getStackTrace());
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean closeConnection() {
+        try {
+            Connection con = (Connection) appSettings.getDbConnection();
+            con.close();
+        } catch (Exception e) {
+            logger.info("Cannot close connection " + e.getStackTrace());
             return false;
         }
         return true;

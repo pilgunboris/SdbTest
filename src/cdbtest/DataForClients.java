@@ -18,6 +18,10 @@ public class DataForClients implements Serializable {
     public static final byte START_SELECT = 2;
     public static final byte START_UPDATE = 3;
     public static final byte START_DELETE = 4;
+    public static final byte END_TESTING = 5;
+    //only for monitor
+//    public static final byte 13
+    
     //class fields
     private int ClientThreadsNum = 10;
     private int ClientTestRequestNum = 100;
@@ -26,11 +30,12 @@ public class DataForClients implements Serializable {
     private String DbPort = "";
     private String DbLogin = "";
     private String DbPass = "";
+    private String DbName = "";
     private ArrayList<String> QueriesInsert = new ArrayList<String>(0);
     private ArrayList<String> QueriesSelect = new ArrayList<String>(0);
     private ArrayList<String> QueriesUpdate = new ArrayList<String>(0);
     private ArrayList<String> QueriesDelete = new ArrayList<String>(0);
-    private int TestStatus = -1;
+    private byte TestStatus = -1;
 
     public DataForClients() {
     }
@@ -123,11 +128,19 @@ public class DataForClients implements Serializable {
         this.ClientTestRequestNum = ClientTestRequestNum;
     }
 
-    public int getTestStatus() {
+    public byte getTestStatus() {
         return TestStatus;
     }
 
-    public void setTestStatus(int TestStatus) {
+    public void setTestStatus(byte TestStatus) {
         this.TestStatus = TestStatus;
+    }
+
+    public String getDbName() {
+        return DbName;
+    }
+
+    public void setDbName(String DbName) {
+        this.DbName = DbName;
     }
 }

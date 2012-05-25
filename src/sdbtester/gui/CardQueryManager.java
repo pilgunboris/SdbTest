@@ -4,12 +4,11 @@
  */
 package sdbtester.gui;
 
-import com.mysql.jdbc.integration.c3p0.MysqlConnectionTester;
 import java.awt.Component;
 import javax.swing.*;
 import org.apache.log4j.Logger;
-import sdbtester.MysqlDbHelper;
-import sdbtester.TestCaseHelper;
+import sdbtester.STestCaseHelper;
+import sdbtester.factory_beans.SDataBaseMysql;
 
 /**
  *
@@ -17,10 +16,10 @@ import sdbtester.TestCaseHelper;
  */
 public class CardQueryManager extends javax.swing.JPanel {
 
-    private DefaultComboBoxModel queryListModel;
-    private TestCaseHelper appSettings = null;
+//    private DefaultComboBoxModel queryListModel;
+    private STestCaseHelper appSettings = null;
     private static Logger logger = Logger.getLogger(CardQueryManager.class);
-    private MysqlDbHelper mysqlDbHelper = new MysqlDbHelper();
+    private SDataBaseMysql mysqlDbHelper = new SDataBaseMysql();
     private int editingQuery = -1;
 
     /**
@@ -28,14 +27,12 @@ public class CardQueryManager extends javax.swing.JPanel {
      */
     public CardQueryManager() {
         initComponents();
-        appSettings = TestCaseHelper.getInstance();
+        appSettings = STestCaseHelper.getInstance();
         groupQueryType.add(radioInsert);
         groupQueryType.add(radioSelect);
         groupQueryType.add(radioUpdate);
         groupQueryType.add(radioDelete);
         groupQueryType.setSelected(radioInsert.getModel(), true);
-        queryListModel = new DefaultComboBoxModel();
-        comboQueries.setModel(queryListModel);
         comboQueries.setRenderer(new ListCellRenderer() {
 
             @Override
@@ -80,6 +77,8 @@ public class CardQueryManager extends javax.swing.JPanel {
         btnRemoveSelectedQuery = new javax.swing.JButton();
         btnMakeQueryTest = new javax.swing.JButton();
         labelTimeoutIndicator = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        labelStatusEditOrNew = new javax.swing.JLabel();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -108,7 +107,7 @@ public class CardQueryManager extends javax.swing.JPanel {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Тип запроса"));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Категория"));
 
         radioInsert.setText("INSERT");
         radioInsert.addActionListener(new java.awt.event.ActionListener() {
@@ -194,6 +193,11 @@ public class CardQueryManager extends javax.swing.JPanel {
         });
 
         btnRemoveSelectedQuery.setText("Удалить");
+        btnRemoveSelectedQuery.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveSelectedQueryActionPerformed(evt);
+            }
+        });
 
         btnMakeQueryTest.setText("Тест");
         btnMakeQueryTest.addActionListener(new java.awt.event.ActionListener() {
@@ -204,6 +208,11 @@ public class CardQueryManager extends javax.swing.JPanel {
 
         labelTimeoutIndicator.setFont(new java.awt.Font("Liberation Mono", 1, 18)); // NOI18N
         labelTimeoutIndicator.setText("0 сек");
+
+        jLabel3.setText("Режим:");
+
+        labelStatusEditOrNew.setForeground(new java.awt.Color(255, 102, 102));
+        labelStatusEditOrNew.setText("новый запрос");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -216,16 +225,18 @@ public class CardQueryManager extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
+                                .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(comboQueries, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                .addGap(0, 504, Short.MAX_VALUE)
+                                .addComponent(labelStatusEditOrNew, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
                                 .addComponent(btnEditSelectedQuery)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnRemoveSelectedQuery))))
+                                .addComponent(btnRemoveSelectedQuery))
+                            .addComponent(comboQueries, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(labelTimeoutIndicator)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -234,6 +245,9 @@ public class CardQueryManager extends javax.swing.JPanel {
                         .addComponent(btnAddQueryToList)))
                 .addContainerGap())
         );
+
+        jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnAddQueryToList, btnEditSelectedQuery, btnMakeQueryTest, btnRemoveSelectedQuery});
+
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -249,7 +263,9 @@ public class CardQueryManager extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(btnRemoveSelectedQuery)
-                                    .addComponent(btnEditSelectedQuery)))
+                                    .addComponent(btnEditSelectedQuery)
+                                    .addComponent(jLabel3)
+                                    .addComponent(labelStatusEditOrNew)))
                             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
@@ -286,17 +302,20 @@ public class CardQueryManager extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void comboQueriesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboQueriesActionPerformed
-        if (queryListModel.getSize() > 0) {
-            areaQueryEditor.setText(queryListModel.getSelectedItem().toString());
+        if (comboQueries.getSelectedItem() != null) {
+            areaQueryEditor.setText(comboQueries.getSelectedItem().toString());
+            editingQuery = -1;
+            btnEditSelectedQuery.setText("Редактировать");
+            labelStatusEditOrNew.setText("новый запрос");
         }
     }//GEN-LAST:event_comboQueriesActionPerformed
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
-        loadQueryListModel();
+        loadQueryList();
     }//GEN-LAST:event_formComponentShown
 
     private void radioInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioInsertActionPerformed
-        loadQueryListModel();
+        loadQueryList();
     }//GEN-LAST:event_radioInsertActionPerformed
 
     private void radioSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioSelectActionPerformed
@@ -314,28 +333,48 @@ public class CardQueryManager extends javax.swing.JPanel {
     private void btnAddQueryToListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddQueryToListActionPerformed
         long res = 0;
         if (radioInsert.isSelected()) {
-            res = mysqlDbHelper.checkQuery(areaQueryEditor.getText(), "insert");
+            res = mysqlDbHelper.executeDataBaseQuery(areaQueryEditor.getText(), "insert");
             if (res >= 0) {
-                appSettings.getQueriesInsert().add(areaQueryEditor.getText());
-                queryListModel.addElement(areaQueryEditor.getText());
+                if (editingQuery == -1) {
+                    appSettings.getQueriesInsert().add(areaQueryEditor.getText());
+                    comboQueries.addItem(areaQueryEditor.getText());
+                } else {
+                    appSettings.getQueriesInsert().set(editingQuery, areaQueryEditor.getText());
+                    loadQueryList();
+                }
             }
         } else if (radioSelect.isSelected()) {
-            res = mysqlDbHelper.checkQuery(areaQueryEditor.getText(), "select");
+            res = mysqlDbHelper.executeDataBaseQuery(areaQueryEditor.getText(), "select");
             if (res >= 0) {
-                appSettings.getQueriesSelect().add(areaQueryEditor.getText());
-                queryListModel.addElement(areaQueryEditor.getText());
+                if (editingQuery == -1) {
+                    appSettings.getQueriesSelect().add(areaQueryEditor.getText());
+                    comboQueries.addItem(areaQueryEditor.getText());
+                } else {
+                    appSettings.getQueriesSelect().set(editingQuery, areaQueryEditor.getText());
+                    loadQueryList();
+                }
             }
         } else if (radioUpdate.isSelected()) {
-            res = mysqlDbHelper.checkQuery(areaQueryEditor.getText(), "update");
+            res = mysqlDbHelper.executeDataBaseQuery(areaQueryEditor.getText(), "update");
             if (res >= 0) {
-                appSettings.getQueriesUpdate().add(areaQueryEditor.getText());
-                queryListModel.addElement(areaQueryEditor.getText());
+                if (editingQuery == -1) {
+                    appSettings.getQueriesUpdate().add(areaQueryEditor.getText());
+                    comboQueries.addItem(areaQueryEditor.getText());
+                } else {
+                    appSettings.getQueriesUpdate().set(editingQuery, areaQueryEditor.getText());
+                    loadQueryList();
+                }
             }
         } else {
-            res = mysqlDbHelper.checkQuery(areaQueryEditor.getText(), "delete");
+            res = mysqlDbHelper.executeDataBaseQuery(areaQueryEditor.getText(), "delete");
             if (res >= 0) {
-                appSettings.getQueriesDelete().add(areaQueryEditor.getText());
-                queryListModel.addElement(areaQueryEditor.getText());
+                if (editingQuery == -1) {
+                    appSettings.getQueriesDelete().add(areaQueryEditor.getText());
+                    comboQueries.addItem(areaQueryEditor.getText());
+                } else {
+                    appSettings.getQueriesDelete().set(editingQuery, areaQueryEditor.getText());
+                    loadQueryList();
+                }
             }
         }
         if (res >= 0) {
@@ -346,29 +385,50 @@ public class CardQueryManager extends javax.swing.JPanel {
 
     private void btnMakeQueryTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMakeQueryTestActionPerformed
         if (radioInsert.isSelected()) {
-            labelTimeoutIndicator.setText("" + mysqlDbHelper.checkQuery(areaQueryEditor.getText(), "insert") + " милисек.");
+            labelTimeoutIndicator.setText("" + mysqlDbHelper.executeDataBaseQuery(areaQueryEditor.getText(), "insert") + " милисек.");
         } else if (radioSelect.isSelected()) {
-            labelTimeoutIndicator.setText("" + mysqlDbHelper.checkQuery(areaQueryEditor.getText(), "select") + " милисек.");
+            labelTimeoutIndicator.setText("" + mysqlDbHelper.executeDataBaseQuery(areaQueryEditor.getText(), "select") + " милисек.");
         } else if (radioUpdate.isSelected()) {
-            labelTimeoutIndicator.setText("" + mysqlDbHelper.checkQuery(areaQueryEditor.getText(), "update") + " милисек.");
+            labelTimeoutIndicator.setText("" + mysqlDbHelper.executeDataBaseQuery(areaQueryEditor.getText(), "update") + " милисек.");
         } else {
-            labelTimeoutIndicator.setText("" + mysqlDbHelper.checkQuery(areaQueryEditor.getText(), "delete") + " милисек.");
+            labelTimeoutIndicator.setText("" + mysqlDbHelper.executeDataBaseQuery(areaQueryEditor.getText(), "delete") + " милисек.");
         }
     }//GEN-LAST:event_btnMakeQueryTestActionPerformed
 
     private void btnEditSelectedQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditSelectedQueryActionPerformed
-//        if (queryListModel.getSelectedItem() != null) {
-//            areaQueryEditor.setText(queryListModel.getSelectedItem().toString());
-//            editingQuery = comboQueries.getSelectedIndex();
-//
-//            JComboBox _petList = (JComboBox) evt.getSource();
-//            ComboBoxModel petList = (ComboBoxModel) comboQueries.getModel();
-//            int id = 
-//            System.out.println("comboQueries.getSelectedIndex()");
-//            System.out.println(queryListModel.getIndexOf(queryListModel.getSelectedItem()));
-//        }
-
+        if (comboQueries.getSelectedItem() != null) {
+            if (editingQuery == -1) {
+                editingQuery = comboQueries.getSelectedIndex();
+                btnEditSelectedQuery.setText("Добавить как новый");
+                areaQueryEditor.setText(comboQueries.getSelectedItem().toString());
+                labelStatusEditOrNew.setText("редактирование");
+            } else {
+                editingQuery = -1;
+                btnEditSelectedQuery.setText("Редактировать");
+                labelStatusEditOrNew.setText("новый запрос");
+            }
+        }
     }//GEN-LAST:event_btnEditSelectedQueryActionPerformed
+
+    private void btnRemoveSelectedQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveSelectedQueryActionPerformed
+        if (comboQueries.getSelectedItem() != null
+                && JOptionPane.showConfirmDialog(null, "Выполнить удаление?", "Подтверждение", JOptionPane.OK_CANCEL_OPTION) == 0) {
+            if (radioInsert.isSelected()) {
+                appSettings.getQueriesInsert().remove(comboQueries.getSelectedIndex());
+                loadQueryList();
+            } else if (radioSelect.isSelected()) {
+                appSettings.getQueriesSelect().remove(comboQueries.getSelectedIndex());
+                loadQueryList();
+            } else if (radioUpdate.isSelected()) {
+                appSettings.getQueriesUpdate().remove(comboQueries.getSelectedIndex());
+                loadQueryList();
+            } else {
+                appSettings.getQueriesDelete().remove(comboQueries.getSelectedIndex());
+                loadQueryList();
+            }
+            appSettings.storeTestCaseSettings(appSettings.getTestCaseName(), appSettings.getTestDbType());
+        }
+    }//GEN-LAST:event_btnRemoveSelectedQueryActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea areaQueryEditor;
     private javax.swing.JButton btnAddQueryToList;
@@ -379,10 +439,12 @@ public class CardQueryManager extends javax.swing.JPanel {
     private javax.swing.ButtonGroup groupQueryType;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel labelStatusEditOrNew;
     private javax.swing.JLabel labelTimeoutIndicator;
     private javax.swing.JRadioButton radioDelete;
     private javax.swing.JRadioButton radioInsert;
@@ -390,19 +452,27 @@ public class CardQueryManager extends javax.swing.JPanel {
     private javax.swing.JRadioButton radioUpdate;
     // End of variables declaration//GEN-END:variables
 
-    private void loadQueryListModel() {
+    private void loadQueryList() {
+        comboQueries.removeAllItems();
         if (radioInsert.isSelected()) {
-            queryListModel = new DefaultComboBoxModel(appSettings.getQueriesInsert().toArray());
+            for (int i = 0; i < appSettings.getQueriesInsert().size(); ++i) {
+                comboQueries.addItem(appSettings.getQueriesInsert().get(i));
+            }
         } else if (radioSelect.isSelected()) {
-            queryListModel = new DefaultComboBoxModel(appSettings.getQueriesSelect().toArray());
+            for (int i = 0; i < appSettings.getQueriesSelect().size(); ++i) {
+                comboQueries.addItem(appSettings.getQueriesSelect().get(i));
+            }
         } else if (radioUpdate.isSelected()) {
-            queryListModel = new DefaultComboBoxModel(appSettings.getQueriesUpdate().toArray());
+            for (int i = 0; i < appSettings.getQueriesInsert().size(); ++i) {
+                comboQueries.addItem(appSettings.getQueriesUpdate().get(i));
+            }
         } else {
-            queryListModel = new DefaultComboBoxModel(appSettings.getQueriesDelete().toArray());
+            for (int i = 0; i < appSettings.getQueriesInsert().size(); ++i) {
+                comboQueries.addItem(appSettings.getQueriesDelete().get(i));
+            }
         }
-        comboQueries.setModel(queryListModel);
-        if (queryListModel.getSelectedItem() != null) {
-            areaQueryEditor.setText(queryListModel.getSelectedItem().toString());
+        if (comboQueries.getSelectedItem() != null) {
+            areaQueryEditor.setText(comboQueries.getSelectedItem().toString());
         }
     }
 
@@ -420,13 +490,5 @@ public class CardQueryManager extends javax.swing.JPanel {
 
     public void setComboQueries(JComboBox comboQueries) {
         this.comboQueries = comboQueries;
-    }
-
-    public DefaultComboBoxModel getQueryListModel() {
-        return queryListModel;
-    }
-
-    public void setQueryListModel(DefaultComboBoxModel queryListModel) {
-        this.queryListModel = queryListModel;
     }
 }

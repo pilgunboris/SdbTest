@@ -4,13 +4,10 @@
  */
 package sdbtester.gui;
 
-import java.awt.Color;
 import java.io.File;
-import java.io.IOException;
-import javax.sound.midi.SysexMessage;
 import javax.swing.*;
 import org.apache.log4j.Logger;
-import sdbtester.TestCaseHelper;
+import sdbtester.STestCaseHelper;
 import sdbtester.validators.DbTestValidator;
 
 /**
@@ -19,7 +16,7 @@ import sdbtester.validators.DbTestValidator;
  */
 public class CardNameOfTest extends javax.swing.JPanel {
 
-    private static TestCaseHelper appSettings;
+    private static STestCaseHelper appSettings;
     private DefaultComboBoxModel comboModel_ExistingTests;
     private static Logger logger = Logger.getLogger(CardNameOfTest.class);
     private DbTestValidator validator = new DbTestValidator();
@@ -31,7 +28,7 @@ public class CardNameOfTest extends javax.swing.JPanel {
      */
     public CardNameOfTest() {
         initComponents();
-        appSettings = TestCaseHelper.getInstance();
+        appSettings = STestCaseHelper.getInstance();
         ComboBoxDbTypes.removeAllItems();
         ComboBoxDbTypes.addItem(appSettings.DB_TYPE_MYSQL);
         ComboBoxDbTypes.addItem(appSettings.DB_TYPE_MONGO);
@@ -245,7 +242,7 @@ public class CardNameOfTest extends javax.swing.JPanel {
             return false;
         }
         try {
-            File f = new File(appSettings.TEST_CASES_MAIN_PATH + dbType);
+            File f = new File(STestCaseHelper.TEST_CASES_MAIN_PATH + dbType);
             if (comboModel_ExistingTests.getSize() > 0) {
                 comboModel_ExistingTests.removeAllElements();
             }
@@ -254,7 +251,7 @@ public class CardNameOfTest extends javax.swing.JPanel {
                 File[] testCases = f.listFiles();
                 for (int i = 0; i < testCases.length; ++i) {
                     File cur = new File(testCases[i].getPath());
-                    if (cur.isDirectory() && (new File(cur.getPath() + "/" + appSettings.SETTINGS_TEST_CASE_PROP_FILE).isFile())) {
+                    if (cur.isDirectory() && (new File(cur.getPath() + "/" + STestCaseHelper.SETTINGS_TEST_CASE_PROP_FILE).isFile())) {
                         comboModel_ExistingTests.addElement(testCases[i].getName());
                     }
                 }

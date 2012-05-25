@@ -5,13 +5,19 @@
 package sdbtester.gui;
 
 import java.awt.CardLayout;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.HashMap;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.apache.log4j.Logger;
-import sdbtester.Server;
-import sdbtester.TestCaseHelper;
+import sdbtester.STestCaseHelper;
+import sdbtester.analysis.SAnalysisHelper;
 
 /**
  *
@@ -19,7 +25,7 @@ import sdbtester.TestCaseHelper;
  */
 public class StartForm extends javax.swing.JFrame {
 
-    private TestCaseHelper appSettings;
+    private STestCaseHelper appSettings;
     private static Logger logger = Logger.getLogger(StartForm.class);
     private HashMap<Integer, String> cardsMap = new HashMap();
     private int CurrentCard = 0;
@@ -31,7 +37,7 @@ public class StartForm extends javax.swing.JFrame {
     public StartForm() {
         initComponents();
         card = (CardLayout) PanelTestingCards.getLayout();
-        appSettings = TestCaseHelper.getInstance();
+        appSettings = STestCaseHelper.getInstance();
         spinnerAppServerPortNum.setValue(appSettings.getAppServerPort());
         btnBackTestCreation.setEnabled(false);
         btnForwardTestCreation.setEnabled(false);
@@ -97,6 +103,27 @@ public class StartForm extends javax.swing.JFrame {
         cardQueryManager1 = new sdbtester.gui.CardQueryManager();
         cardTestRunning2 = new sdbtester.gui.CardTestRunning();
         jPanel1 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        comboDbTypes1 = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
+        comboExistingTests1 = new javax.swing.JComboBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        areaDescriptionTest1 = new javax.swing.JTextArea();
+        jLabel7 = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        comboDbTypes2 = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
+        comboExistingTests2 = new javax.swing.JComboBox();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        areaDescriptionTest2 = new javax.swing.JTextArea();
+        jLabel8 = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -105,6 +132,12 @@ public class StartForm extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jTabbedPainMain.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jTabbedPainMainStateChanged(evt);
+            }
+        });
 
         jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -138,12 +171,12 @@ public class StartForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(PanelTestingCards, javax.swing.GroupLayout.DEFAULT_SIZE, 1030, Short.MAX_VALUE)
+            .addComponent(PanelTestingCards, javax.swing.GroupLayout.DEFAULT_SIZE, 1009, Short.MAX_VALUE)
         );
         PanelTestingLayout.setVerticalGroup(
             PanelTestingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelTestingLayout.createSequentialGroup()
-                .addComponent(PanelTestingCards, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                .addComponent(PanelTestingCards, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -151,7 +184,208 @@ public class StartForm extends javax.swing.JFrame {
 
         jTabbedPainMain.addTab("Тестирование", PanelTesting);
 
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Выбор тестов для анализа"));
+
+        jButton2.setText("Обновить списки");
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Тест 1"));
+
+        jLabel2.setText("Тип БД:");
+
+        comboDbTypes1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboDbTypes1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboDbTypes1ActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Имя:");
+
+        comboExistingTests1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboExistingTests1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboExistingTests1ActionPerformed(evt);
+            }
+        });
+
+        areaDescriptionTest1.setColumns(20);
+        areaDescriptionTest1.setRows(5);
+        jScrollPane1.setViewportView(areaDescriptionTest1);
+
+        jLabel7.setText("Описание:");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(comboExistingTests1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(comboDbTypes1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(comboDbTypes1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(comboExistingTests1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Тест 2"));
+
+        jLabel4.setText("Тип БД:");
+
+        comboDbTypes2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboDbTypes2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboDbTypes2ActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Имя:");
+
+        comboExistingTests2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboExistingTests2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboExistingTests2ActionPerformed(evt);
+            }
+        });
+
+        areaDescriptionTest2.setColumns(20);
+        areaDescriptionTest2.setRows(5);
+        jScrollPane2.setViewportView(areaDescriptionTest2);
+
+        jLabel8.setText("Описание:");
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(comboDbTypes2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(comboExistingTests2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(comboDbTypes2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(comboExistingTests2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addContainerGap())
+        );
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jPanel7.setLayout(new java.awt.GridLayout(1, 0));
+
+        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("Анализ результатов тестирования");
+        jPanel7.add(jLabel5);
+
+        jButton1.setText("Отобразить");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 987, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
         jTabbedPainMain.addTab("Анализ", jPanel1);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -200,14 +434,14 @@ public class StartForm extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(702, Short.MAX_VALUE))
+                .addContainerGap(681, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(405, Short.MAX_VALUE))
+                .addContainerGap(416, Short.MAX_VALUE))
         );
 
         jTabbedPainMain.addTab("Настройки", jPanel2);
@@ -234,7 +468,7 @@ public class StartForm extends javax.swing.JFrame {
                         .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(1026, 1026, 1026))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTabbedPainMain)
+                        .addComponent(jTabbedPainMain, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -280,7 +514,7 @@ public class StartForm extends javax.swing.JFrame {
             //CardDbConnect
             case 1: {
                 if (cardMysqlDbSettings1.getComboDatabasesModel().getSize() > 0
-                        && cardMysqlDbSettings1.getMysqlDbHelper().CreateConnectionMysqlForCertainDB(cardMysqlDbSettings1.getComboDatabasesModel().getSelectedItem().toString())) {
+                        && cardMysqlDbSettings1.getDataBase().CreateConnectionForCertainDB(cardMysqlDbSettings1.getComboDatabasesModel().getSelectedItem().toString())) {
                     appSettings.storeTestCaseSettings(appSettings.getTestCaseName(), appSettings.getTestDbType());
                     goToNextCard(true);
                 }
@@ -289,11 +523,11 @@ public class StartForm extends javax.swing.JFrame {
             //CardQueryManager
             case 2: {
                 goToNextCard(true);
-                new Server(appSettings.getAppServerPort());
+                appSettings.setProgressThread(new Thread(new ProgressThread(cardTestRunning2)));
+                appSettings.getProgressThread().start();
                 break;
             }
             case 3: {
-                
             }
 
         }
@@ -301,6 +535,10 @@ public class StartForm extends javax.swing.JFrame {
 
     private void btnBackTestCreationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackTestCreationActionPerformed
         goToNextCard(false);
+        if (appSettings.getProgressThread().isAlive()) {
+            appSettings.getProgressThread().interrupt();
+            appSettings.setProgressThread(null);
+        }
     }//GEN-LAST:event_btnBackTestCreationActionPerformed
 
     private void btnApplyAppServerPortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyAppServerPortActionPerformed
@@ -309,6 +547,64 @@ public class StartForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Номер порта успешно изменен", "Info", JOptionPane.OK_OPTION);
         }
     }//GEN-LAST:event_btnApplyAppServerPortActionPerformed
+
+    private void jTabbedPainMainStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPainMainStateChanged
+        if (jTabbedPainMain.getSelectedIndex() == 1) {
+            comboDbTypes1.removeAllItems();
+            comboDbTypes2.removeAllItems();
+            comboDbTypes1.addItem(STestCaseHelper.DB_TYPE_MYSQL);
+            comboDbTypes1.addItem(STestCaseHelper.DB_TYPE_MONGO);
+            comboDbTypes2.addItem(STestCaseHelper.DB_TYPE_MYSQL);
+            comboDbTypes2.addItem(STestCaseHelper.DB_TYPE_MONGO);
+            comboExistingTests1.removeAllItems();
+            comboExistingTests2.removeAllItems();
+            LoadExistingTestCases(STestCaseHelper.DB_TYPE_MYSQL, comboExistingTests1);
+            LoadExistingTestCases(STestCaseHelper.DB_TYPE_MYSQL, comboExistingTests2);
+        }
+    }//GEN-LAST:event_jTabbedPainMainStateChanged
+
+    private void comboDbTypes1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboDbTypes1ActionPerformed
+        comboExistingTests1.removeAllItems();
+        if (comboDbTypes1.getSelectedItem() != null) {
+            LoadExistingTestCases(comboDbTypes1.getSelectedItem().toString(), comboExistingTests1);
+        }
+    }//GEN-LAST:event_comboDbTypes1ActionPerformed
+
+    private void comboDbTypes2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboDbTypes2ActionPerformed
+        comboExistingTests2.removeAllItems();
+        if (comboDbTypes2.getSelectedItem() != null) {
+            LoadExistingTestCases(comboDbTypes2.getSelectedItem().toString(), comboExistingTests2);
+        }
+    }//GEN-LAST:event_comboDbTypes2ActionPerformed
+
+    private void comboExistingTests1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboExistingTests1ActionPerformed
+        if (comboExistingTests1.getSelectedItem() != null && comboDbTypes1.getSelectedItem() != null) {
+            SAnalysisHelper sah = new SAnalysisHelper();
+            sah.loadTestFromTemplate(comboExistingTests1.getSelectedItem().toString(), comboDbTypes1.getSelectedItem().toString());
+            appSettings.setAnalysisTest1(sah);
+            areaDescriptionTest1.setText(sah.getTestCaseDescription());
+        } else {
+            appSettings.setAnalysisTest1(new SAnalysisHelper());
+            areaDescriptionTest1.setText("");
+        }
+    }//GEN-LAST:event_comboExistingTests1ActionPerformed
+
+    private void comboExistingTests2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboExistingTests2ActionPerformed
+        if (comboExistingTests2.getSelectedItem() != null && comboDbTypes2.getSelectedItem() != null) {
+            SAnalysisHelper sah = new SAnalysisHelper();
+            sah.loadTestFromTemplate(comboExistingTests2.getSelectedItem().toString(), comboDbTypes2.getSelectedItem().toString());
+            appSettings.setAnalysisTest2(sah);
+            areaDescriptionTest2.setText(sah.getTestCaseDescription());
+        } else {
+            appSettings.setAnalysisTest2(new SAnalysisHelper());
+            areaDescriptionTest2.setText("");
+        }
+    }//GEN-LAST:event_comboExistingTests2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        JFrame analysisForm = new AnalysisForm();
+        analysisForm.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -365,19 +661,40 @@ public class StartForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelTesting;
     private javax.swing.JPanel PanelTestingCards;
+    private javax.swing.JTextArea areaDescriptionTest1;
+    private javax.swing.JTextArea areaDescriptionTest2;
     private javax.swing.JButton btnApplyAppServerPort;
     private javax.swing.JButton btnBackTestCreation;
     private javax.swing.JButton btnForwardTestCreation;
     private sdbtester.gui.CardMysqlDbSettings cardMysqlDbSettings1;
     private sdbtester.gui.CardQueryManager cardQueryManager1;
     private sdbtester.gui.CardTestRunning cardTestRunning2;
+    private javax.swing.JComboBox comboDbTypes1;
+    private javax.swing.JComboBox comboDbTypes2;
+    private javax.swing.JComboBox comboExistingTests1;
+    private javax.swing.JComboBox comboExistingTests2;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private sdbtester.gui.CardNameOfTest jPanelNameOfTest1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPainMain;
     private javax.swing.JSpinner spinnerAppServerPortNum;
     // End of variables declaration//GEN-END:variables
@@ -397,7 +714,51 @@ public class StartForm extends javax.swing.JFrame {
                 btnBackTestCreation.setEnabled(false);
             }
             btnForwardTestCreation.setEnabled(true);
-
         }
+    }
+
+    private boolean LoadExistingTestCases(String dbType, JComboBox combo) {
+        try {
+            File f = new File(STestCaseHelper.TEST_CASES_MAIN_PATH + dbType);
+            if (f.isDirectory()) {
+                File[] testCases = f.listFiles();
+                for (int i = 0; i < testCases.length; ++i) {
+                    File cur = new File(testCases[i].getPath());
+                    File tmp = null;
+                    if (cur.isDirectory()
+                            && (new File(cur.getPath() + "/" + STestCaseHelper.SETTINGS_TEST_CASE_PROP_FILE).isFile())
+                            && checkIfTestHasResults(testCases[i].getName(), dbType)) {
+                        combo.addItem(testCases[i].getName());
+                    }
+                }
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            logger.error(e.getStackTrace());
+            JOptionPane.showMessageDialog(null, e.getMessage() + e.getStackTrace(), "Not enough mana", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkIfTestHasResults(String testName, String dbType) {
+        SAnalysisHelper sah = new SAnalysisHelper();
+        sah.loadTestFromTemplate(testName, dbType);
+        if (!sah.getResultInsert().isEmpty() && !sah.getResultInsertCPU().isEmpty() && !sah.getResultInsertRAM().isEmpty()
+                || !sah.getResultSelect().isEmpty() && !sah.getResultSelectCPU().isEmpty() && !sah.getResultSelectRAM().isEmpty()
+                || !sah.getResultUpdate().isEmpty() && !sah.getResultUpdateCPU().isEmpty() && !sah.getResultUpdateRAM().isEmpty()
+                || !sah.getResultDelete().isEmpty() && !sah.getResultDeleteCPU().isEmpty() && !sah.getResultDeleteRAM().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    public CardTestRunning getCardTestRunning2() {
+        return cardTestRunning2;
+    }
+
+    public void setCardTestRunning2(CardTestRunning cardTestRunning2) {
+        this.cardTestRunning2 = cardTestRunning2;
     }
 }
